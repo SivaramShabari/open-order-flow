@@ -4,6 +4,7 @@ public enum EventTypeV1 {
 
 
     // ORDER EVENTS
+    ORDER_CREATION_REQUESTED,
     ORDER_PLACED,
     ORDER_PAYMENT_INITIATED,
     ORDER_PAID,

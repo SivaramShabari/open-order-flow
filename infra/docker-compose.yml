@@ -26,6 +26,38 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-kraft
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      CLUSTER_ID: kraft-cluster-1
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-kraft:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,INTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,INTERNAL://kafka-kraft:29092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+    volumes:
+      - ./data/kafka:/tmp/kraft-combined-logs  # ✅ Writable folder
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8099:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kraft
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-kraft:29092
+
 volumes:
   user_data:
   pgadmin_data:
+  kafka_data:

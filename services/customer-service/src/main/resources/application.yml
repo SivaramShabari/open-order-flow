@@ -20,3 +20,6 @@ spring:
       hibernate:
         format_sql: true
     database: postgresql
+
+kafka:
+  bootstrap-servers: localhost:9092
