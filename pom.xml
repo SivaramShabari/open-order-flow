@@ -11,8 +11,13 @@
 
     <modules>
         <module>common-lib</module>
-        <module>services/user-service</module>
+        <module>services/business-service</module>
+        <module>services/customer-service</module>
+        <module>services/delivery-partner-service</module>
+        <module>services/inventory-service</module>
+        <module>services/notification-service</module>
+        <module>services/order-service</module>
+        <module>services/payment-service</module>
         <module>common-lib</module>
-        <!-- Add more later -->
     </modules>
 </project>
