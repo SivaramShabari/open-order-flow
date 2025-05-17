@@ -4,17 +4,22 @@ import com.openorderflow.common.auth.jwt.JwtUtils;
 import com.openorderflow.common.auth.model.OtpVerifyRequest;
 import com.openorderflow.common.auth.model.PhoneLoginRequest;
 import com.openorderflow.common.auth.service.OtpServiceClient;
-import com.openorderflow.customer.repository.CustomerProfileRepository;
-import com.openorderflow.common.auth.model.PhoneLoginResponse;
-import com.openorderflow.customer.dto.OtpVerifyResponse;
+import com.openorderflow.customer.dto.CreateCustomerProfileRequest;
+import com.openorderflow.customer.entity.CustomerAddress;
 import com.openorderflow.customer.entity.CustomerProfile;
+import com.openorderflow.customer.repository.CustomerProfileRepository;
+import com.openorderflow.customer.dto.OtpVerifyResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.security.InvalidKeyException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -22,33 +27,68 @@ public class AuthService {
     private final CustomerProfileRepository customerProfileRepository;
     private final JwtUtils jwtUtils;
 
-    public PhoneLoginResponse getOtpForPhoneNumber(PhoneLoginRequest phoneLoginRequest) {
-        var isExistingUser = customerProfileRepository.existsByPrimaryPhoneNumber(phoneLoginRequest.phone());
-        var isOtpSent = true;
-        try {
-            otpServiceClient.sendOtp(phoneLoginRequest.phone());
-        } catch (Exception ex) {
-            isOtpSent = false;
-        }
-        return new PhoneLoginResponse(isOtpSent, !isExistingUser, phoneLoginRequest.phone());
+    public void getOtpForPhoneNumber(PhoneLoginRequest phoneLoginRequest) throws AccountNotFoundException {
+        validateUser(phoneLoginRequest.phone());
+        otpServiceClient.sendOtp(phoneLoginRequest.phone());
     }
 
-    public OtpVerifyResponse verifyOtp(OtpVerifyRequest otpVerifyRequest) throws InvalidKeyException {
+    public OtpVerifyResponse verifyOtp(OtpVerifyRequest otpVerifyRequest) throws InvalidKeyException, AccountNotFoundException {
+        validateUser(otpVerifyRequest.phone());
+        validateOtp(otpVerifyRequest);
+
+        var customerProfile = customerProfileRepository.getByPrimaryPhoneNumber(otpVerifyRequest.phone());
+
+        var jwtClaims = new HashMap<String, Object>();
+        jwtClaims.put("userId", customerProfile.getId());
+        jwtClaims.put("userName", customerProfile.getName());
+
+        var jwtToken = jwtUtils.generateToken(otpVerifyRequest.phone(), jwtClaims, Duration.ofDays(7));
+
+        return new OtpVerifyResponse(customerProfile, jwtToken);
+    }
+
+    public void createCustomerProfileRequest(CreateCustomerProfileRequest createCustomerProfileRequest) throws Exception {
+        validateNewUser(createCustomerProfileRequest);
+        var customerProfile = new CustomerProfile();
+        customerProfile.setPrimaryPhoneNumber(createCustomerProfileRequest.phone());
+        customerProfile.setName((customerProfile.getName()));
+        var address = new CustomerAddress();
+        address.setType("SIGN_UP_LOCATION");
+        address.setGeoLatitude(createCustomerProfileRequest.location().latitude());
+        address.setGeoLongitude(createCustomerProfileRequest.location().longitude());
+
+        var addresses = new ArrayList<CustomerAddress>();
+        addresses.add(address);
+        customerProfile.setAddresses(addresses);
+
+        customerProfileRepository.save(customerProfile);
+
+        try {
+            getOtpForPhoneNumber(new PhoneLoginRequest(createCustomerProfileRequest.phone()));
+        } catch (Exception ex) {
+            log.error("Error creating new user. Message" + ex.getMessage());
+            throw ex;
+        }
+    }
+
+    private void validateUser(String phone) throws AccountNotFoundException {
+        var isExistingUser = customerProfileRepository.existsByPrimaryPhoneNumber(phone);
+        if (!isExistingUser)
+            throw new AccountNotFoundException("Customer phone number not registered");
+    }
+
+    private void validateNewUser(CreateCustomerProfileRequest createCustomerProfileRequest) throws Exception {
+        var isExistingUser = customerProfileRepository.existsByPrimaryPhoneNumber(createCustomerProfileRequest.phone());
+        isExistingUser = isExistingUser || customerProfileRepository.existsByEmail(createCustomerProfileRequest.email());
+        if (isExistingUser)
+            throw new Exception("Customer already registered");
+    }
+
+    private void validateOtp(OtpVerifyRequest otpVerifyRequest) throws InvalidKeyException {
         var isValidOtp = otpServiceClient.verifyOtp(otpVerifyRequest.phone(), otpVerifyRequest.otp());
         if (!isValidOtp)
             throw new InvalidKeyException("Invalid OTP");
-        var customerProfile = customerProfileRepository.getByPrimaryPhoneNumber(otpVerifyRequest.phone());
-        if (customerProfile == null) {
-            var claims = new HashMap<String, Object>();
-            claims.put("userId", "NEW_USER");
-            claims.put("userName", "NEW_USER");
-            var jwtToken = jwtUtils.generateToken(otpVerifyRequest.phone(), claims, Duration.ofDays(7));
-            return new OtpVerifyResponse(true, null, jwtToken);
-        }
-        var claims = new HashMap<String, Object>();
-        var jwtToken = jwtUtils.generateToken(otpVerifyRequest.phone(), claims, Duration.ofDays(7));
-        claims.put("userId", customerProfile.getId());
-        claims.put("userName", customerProfile.getName());
-        return new OtpVerifyResponse(false, customerProfile, jwtToken);
     }
+
+
 }

@@ -9,5 +9,6 @@ import java.util.UUID;
 @Repository
 public interface CustomerProfileRepository extends JpaRepository<CustomerProfile, UUID> {
     Boolean existsByPrimaryPhoneNumber(String primaryPhoneNumber);
+    Boolean existsByEmail(String email);
     CustomerProfile getByPrimaryPhoneNumber(String primaryPhoneNumber);
 }

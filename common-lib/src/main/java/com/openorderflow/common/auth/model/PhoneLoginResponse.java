@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
+@Deprecated
 public record PhoneLoginResponse(
         @NotNull Boolean isOtpSent,
         @NotNull Boolean isNewUser,
