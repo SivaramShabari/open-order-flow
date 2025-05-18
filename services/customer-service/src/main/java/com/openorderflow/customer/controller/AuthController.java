@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.security.InvalidKeyException;
@@ -40,18 +37,18 @@ public class AuthController {
         try {
             var response = authService.verifyOtp(otpVerifyRequest);
             log.info(response.toString());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.ok(response);
         } catch (InvalidKeyException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
-            ResponseEntity.badRequest().body(ex.getMessage());
         } catch (AccountNotFoundException ex) {
             log.error("Invalid phone number provided for OTP verification. Phone number: {}", otpVerifyRequest.phone());
-            ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
     @PostMapping(path = "/signUp")
-    public ResponseEntity<?> signUpAndSendOtp(@Valid CreateCustomerProfileRequest createCustomerProfileRequest) {
-
+    public ResponseEntity<?> signUpAndSendOtp(@Valid @RequestBody CreateCustomerProfileRequest createCustomerProfileRequest) throws Exception {
+        authService.createCustomerProfileRequest(createCustomerProfileRequest);
+        return ResponseEntity.ok("OTP Sent");
     }
 }

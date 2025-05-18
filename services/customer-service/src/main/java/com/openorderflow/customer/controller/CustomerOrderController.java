@@ -1,23 +1,29 @@
 package com.openorderflow.customer.controller;
 import com.openorderflow.common.auth.util.CurrentUserContext;
-import com.openorderflow.common.dto.order.OrderCreationRequest;
+import com.openorderflow.common.dto.order.CustomerOrderCreationRequest;
+import com.openorderflow.customer.service.UserOrderService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 @RestController
 @RequestMapping("/order")
+@RequiredArgsConstructor
 public class CustomerOrderController {
+    private final UserOrderService userOrderService;
 
-    @GetMapping
+    @GetMapping("/checkUser")
     public ResponseEntity<?> test(){
-        return ResponseEntity.ok(CurrentUserContext.phone());
+        return ResponseEntity.ok(CurrentUserContext.get());
     }
 
-    @PostMapping
-    public ResponseEntity<?> placeOrder(@Valid @RequestBody OrderCreationRequest request) {
-        var userId = CurrentUserContext.userId();
+    @PostMapping("/requestOrderCreation")
+    public ResponseEntity<?> placeOrder(@Valid @RequestBody CustomerOrderCreationRequest request) throws AccountNotFoundException {
+        userOrderService.requestOrderCreation(request);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

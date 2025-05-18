@@ -7,6 +7,7 @@ import com.openorderflow.common.auth.service.OtpServiceClient;
 import com.openorderflow.customer.dto.CreateCustomerProfileRequest;
 import com.openorderflow.customer.entity.CustomerAddress;
 import com.openorderflow.customer.entity.CustomerProfile;
+import com.openorderflow.customer.mapper.CustomerProfileMapper;
 import com.openorderflow.customer.repository.CustomerProfileRepository;
 import com.openorderflow.customer.dto.OtpVerifyResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ import java.util.HashMap;
 public class AuthService {
     private final OtpServiceClient otpServiceClient;
     private final CustomerProfileRepository customerProfileRepository;
+    private final CustomerProfileMapper customerProfileMapper;
+
     private final JwtUtils jwtUtils;
 
     public void getOtpForPhoneNumber(PhoneLoginRequest phoneLoginRequest) throws AccountNotFoundException {
@@ -41,21 +44,26 @@ public class AuthService {
         var jwtClaims = new HashMap<String, Object>();
         jwtClaims.put("userId", customerProfile.getId());
         jwtClaims.put("userName", customerProfile.getName());
+        jwtClaims.put("email", customerProfile.getEmail());
 
         var jwtToken = jwtUtils.generateToken(otpVerifyRequest.phone(), jwtClaims, Duration.ofDays(7));
 
-        return new OtpVerifyResponse(customerProfile, jwtToken);
+        return new OtpVerifyResponse(customerProfileMapper.toCustomerProfileDto(customerProfile), jwtToken);
     }
 
     public void createCustomerProfileRequest(CreateCustomerProfileRequest createCustomerProfileRequest) throws Exception {
         validateNewUser(createCustomerProfileRequest);
         var customerProfile = new CustomerProfile();
+
         customerProfile.setPrimaryPhoneNumber(createCustomerProfileRequest.phone());
-        customerProfile.setName((customerProfile.getName()));
+        customerProfile.setName((createCustomerProfileRequest.name()));
+        customerProfile.setEmail((createCustomerProfileRequest.email()));
+
         var address = new CustomerAddress();
         address.setType("SIGN_UP_LOCATION");
         address.setGeoLatitude(createCustomerProfileRequest.location().latitude());
         address.setGeoLongitude(createCustomerProfileRequest.location().longitude());
+        address.setProfile(customerProfile);
 
         var addresses = new ArrayList<CustomerAddress>();
         addresses.add(address);

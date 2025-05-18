@@ -1,4 +1,4 @@
-package com.openorderflow.common.kafka.events.v1.order;
+package com.openorderflow.common.dto.order;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -14,19 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class RequestOrderEventV1 {
-
-    @NotNull
-    private UUID customerId;
-
-    @NotNull
-    private String customerName;
-
-    @NotNull
-    private String customerPhone;
-
-    @NotNull
-    private String customerEmail;
+public class CustomerOrderCreationRequest {
 
     @NotNull
     private UUID businessOutletId;
@@ -45,9 +33,6 @@ public class RequestOrderEventV1 {
 
     @NotNull
     private PaymentDetails payment;
-
-    @NotNull
-    private Instant orderedAt;
 
     @Getter
     @Setter

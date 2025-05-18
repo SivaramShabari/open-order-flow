@@ -28,7 +28,7 @@ public class CustomerProfile {
     @Email
     private String email;
 
-    @Column(name = "is_email_verified")
+    @Column(name = "is_email_verified", nullable = false)
     private Boolean isEmailVerified;
 
     @OneToOne
