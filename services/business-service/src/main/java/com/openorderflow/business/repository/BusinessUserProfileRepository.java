@@ -8,5 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface BusinessUserProfileRepository extends JpaRepository<BusinessUserProfile, UUID> {
-
+    Boolean existsByPhone(String phone);
+    BusinessUserProfile getByPhone(String phone);
 }

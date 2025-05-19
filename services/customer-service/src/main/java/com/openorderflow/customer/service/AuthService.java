@@ -4,7 +4,7 @@ import com.openorderflow.common.auth.jwt.JwtUtils;
 import com.openorderflow.common.auth.model.OtpVerifyRequest;
 import com.openorderflow.common.auth.model.PhoneLoginRequest;
 import com.openorderflow.common.auth.service.OtpServiceClient;
-import com.openorderflow.customer.dto.CreateCustomerProfileRequest;
+import com.openorderflow.customer.dto.CustomerProfileCreationRequest;
 import com.openorderflow.customer.entity.CustomerAddress;
 import com.openorderflow.customer.entity.CustomerProfile;
 import com.openorderflow.customer.mapper.CustomerProfileMapper;
@@ -27,7 +27,6 @@ public class AuthService {
     private final OtpServiceClient otpServiceClient;
     private final CustomerProfileRepository customerProfileRepository;
     private final CustomerProfileMapper customerProfileMapper;
-
     private final JwtUtils jwtUtils;
 
     public void getOtpForPhoneNumber(PhoneLoginRequest phoneLoginRequest) throws AccountNotFoundException {
@@ -39,7 +38,7 @@ public class AuthService {
         validateUser(otpVerifyRequest.phone());
         validateOtp(otpVerifyRequest);
 
-        var customerProfile = customerProfileRepository.getByPrimaryPhoneNumber(otpVerifyRequest.phone());
+        var customerProfile = customerProfileRepository.getByPhone(otpVerifyRequest.phone());
 
         var jwtClaims = new HashMap<String, Object>();
         jwtClaims.put("userId", customerProfile.getId());
@@ -51,11 +50,11 @@ public class AuthService {
         return new OtpVerifyResponse(customerProfileMapper.toCustomerProfileDto(customerProfile), jwtToken);
     }
 
-    public void createCustomerProfileRequest(CreateCustomerProfileRequest createCustomerProfileRequest) throws Exception {
+    public void createCustomerProfileRequest(CustomerProfileCreationRequest createCustomerProfileRequest) throws Exception {
         validateNewUser(createCustomerProfileRequest);
         var customerProfile = new CustomerProfile();
 
-        customerProfile.setPrimaryPhoneNumber(createCustomerProfileRequest.phone());
+        customerProfile.setPhone(createCustomerProfileRequest.phone());
         customerProfile.setName((createCustomerProfileRequest.name()));
         customerProfile.setEmail((createCustomerProfileRequest.email()));
 
@@ -80,13 +79,13 @@ public class AuthService {
     }
 
     private void validateUser(String phone) throws AccountNotFoundException {
-        var isExistingUser = customerProfileRepository.existsByPrimaryPhoneNumber(phone);
+        var isExistingUser = customerProfileRepository.existsByPhone(phone);
         if (!isExistingUser)
             throw new AccountNotFoundException("Customer phone number not registered");
     }
 
-    private void validateNewUser(CreateCustomerProfileRequest createCustomerProfileRequest) throws Exception {
-        var isExistingUser = customerProfileRepository.existsByPrimaryPhoneNumber(createCustomerProfileRequest.phone());
+    private void validateNewUser(CustomerProfileCreationRequest createCustomerProfileRequest) throws Exception {
+        var isExistingUser = customerProfileRepository.existsByPhone(createCustomerProfileRequest.phone());
         isExistingUser = isExistingUser || customerProfileRepository.existsByEmail(createCustomerProfileRequest.email());
         if (isExistingUser)
             throw new Exception("Customer already registered");

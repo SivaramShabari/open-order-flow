@@ -26,7 +26,7 @@ public record AuthenticatedUser(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     @Override public String getPassword() { return null; }

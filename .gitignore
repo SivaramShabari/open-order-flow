@@ -1,2 +1,85 @@
-target/
+# === Java ===
 *.class
+*.log
+*.war
+*.jar
+*.iml
+*.iws
+*.ipr
+*.hprof
+
+# === Maven ===
+target/
+dependency-reduced-pom.xml
+buildNumber.properties
+release.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# === IntelliJ IDEA ===
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!.mvn/wrapper/maven-wrapper.properties
+
+# === VS Code ===
+.vscode/
+
+# === OS Specific ===
+.DS_Store
+Thumbs.db
+
+# === Logs ===
+logs/
+*.log
+*.out
+
+# === Spring Boot Specific ===
+*.db
+*.pid
+
+# === Environment Variables / Secrets ===
+.env
+*.env
+*.key
+*.pem
+
+# === Docker / Compose ===
+**/docker-compose.override.yml
+**/docker-compose.yml
+**/.docker/
+**/build/
+
+# === Redis / Kafka temp ===
+**/data/
+**/tmp/
+**/zookeeper/
+**/kafka-logs/
+
+# === Git Hooks / Metadata ===
+.git-hooks/
+.hooks/
+
+# === Generated docs or JSON ===
+**/generated/
+**/docs/*.json
+
+# === Test Output ===
+**/test-output/
+**/surefire-reports/
+**/jacoco.exec
+coverage/
+
+# === Node Modules (if frontend also exists) ===
+**/node_modules/
+
+# === Misc ===
+*.swp
+*.bak
+*.tmp
+*.backup
+
+# === Ignore target folders in all modules ===
+**/target/

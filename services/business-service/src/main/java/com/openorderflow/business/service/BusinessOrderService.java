@@ -1,4 +1,4 @@
-package com.openorderflow.business;
+package com.openorderflow.business.service;
 
 import org.springframework.stereotype.Service;
 

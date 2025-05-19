@@ -2,7 +2,6 @@ package com.openorderflow.customer.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jdk.jfr.BooleanFlag;
 import lombok.*;
 
 import java.util.List;
@@ -21,8 +20,8 @@ public class CustomerProfile {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "primary_phone_number", nullable = false, unique = true, length = 10)
-    private String primaryPhoneNumber;
+    @Column(name = "phone", nullable = false, unique = true, length = 10)
+    private String phone;
 
     @Column(name = "email", unique = true)
     @Email
@@ -35,6 +34,6 @@ public class CustomerProfile {
     @JoinColumn(name="primary_address_id", foreignKey =  @ForeignKey(name = "fk_primary_address_customer"))
     private CustomerAddress primaryAddress;
 
-    @OneToMany(mappedBy = "profile",  cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "profile",  cascade = CascadeType.ALL, orphanRemoval = true)
     private  List<CustomerAddress> addresses;
 }

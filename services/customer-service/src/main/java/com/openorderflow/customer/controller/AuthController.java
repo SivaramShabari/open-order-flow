@@ -2,12 +2,11 @@ package com.openorderflow.customer.controller;
 
 import com.openorderflow.common.auth.model.OtpVerifyRequest;
 import com.openorderflow.common.auth.model.PhoneLoginRequest;
-import com.openorderflow.customer.dto.CreateCustomerProfileRequest;
+import com.openorderflow.customer.dto.CustomerProfileCreationRequest;
 import com.openorderflow.customer.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/signUp")
-    public ResponseEntity<?> signUpAndSendOtp(@Valid @RequestBody CreateCustomerProfileRequest createCustomerProfileRequest) throws Exception {
+    public ResponseEntity<?> signUpAndSendOtp(@Valid @RequestBody CustomerProfileCreationRequest createCustomerProfileRequest) throws Exception {
         authService.createCustomerProfileRequest(createCustomerProfileRequest);
         return ResponseEntity.ok("OTP Sent");
     }

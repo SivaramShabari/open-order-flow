@@ -4,7 +4,7 @@ import com.openorderflow.common.common.GeoLocation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateCustomerProfileRequest(
+public record CustomerProfileCreationRequest(
         @Email String email,
         @NotNull String name,
         @NotNull GeoLocation location,

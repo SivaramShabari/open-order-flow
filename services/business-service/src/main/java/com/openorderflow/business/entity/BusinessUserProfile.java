@@ -1,7 +1,9 @@
 package com.openorderflow.business.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,27 +14,41 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 public class BusinessUserProfile {
     @Id
     @GeneratedValue
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "is_owner", nullable = false)
-    private boolean isOwner;
+    @Column(name = "phone", nullable = false, length = 13)
+    private String phone;
 
-    @Column(name = "can_update_inventory", nullable = false)
-    private boolean canUpdateInventory;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "can_approve_orders", nullable = false)
-    private boolean canApproveOrders;
+    @Email
+    @Column(name = "email", nullable = false)
+    private String email;
 
-    @OneToMany(mappedBy = "businessAdminProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BusinessUserRole> roles;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private BusinessAdminRoleEnum role;
 
-    @OneToMany(mappedBy = "createdBy")
-    private List<Business> createdBusinesses;
+    @OneToOne
+    @JoinColumn (name = "business_id", foreignKey = @ForeignKey(name = "business_user_business"), insertable = false, updatable = false)
+    private Business business;
 
-    @OneToMany(mappedBy = "updatedBy")
-    private List<Business> updatedBusinesses;
+    @OneToOne
+    @JoinColumn (name = "business_outlet_id", foreignKey = @ForeignKey(name = "business_user_outlet"), insertable = false, updatable = false)
+    private BusinessOutlet businessOutlet;
+
+    public enum  BusinessAdminRoleEnum {
+        OWNER,
+        BUSINESS_ADMIN,
+        OUTLET_ADMIN,
+        INVENTORY_MANAGER,
+        ORDER_MANAGER,
+        MENU_MANAGER,
+    }
 }

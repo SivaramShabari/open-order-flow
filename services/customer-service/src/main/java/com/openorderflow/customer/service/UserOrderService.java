@@ -1,6 +1,5 @@
 package com.openorderflow.customer.service;
 
-import com.openorderflow.common.auth.model.AuthenticatedUser;
 import com.openorderflow.common.auth.util.CurrentUserContext;
 import com.openorderflow.common.dto.order.CustomerOrderCreationRequest;
 import com.openorderflow.common.kafka.events.v1.order.RequestOrderEventV1;
@@ -30,7 +29,7 @@ public class UserOrderService {
                 .customerId(customerProfile.get().getId())
                 .customerName(customerProfile.get().getName())
                 .customerEmail(customerProfile.get().getEmail())
-                .customerPhone(customerProfile.get().getPrimaryPhoneNumber())
+                .customerPhone(customerProfile.get().getPhone())
                 .build();
 
         orderEventProducer.sendOrderPlacedEvent(enrichedEvent);
