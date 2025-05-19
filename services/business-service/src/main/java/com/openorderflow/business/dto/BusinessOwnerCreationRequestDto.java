@@ -26,9 +26,4 @@ public class BusinessUserCreationRequest {
     @NotNull
     private String phone;
 
-    @NotNull
-    private UUID businessOutletId;
-
-    @NotNull
-    private BusinessUserProfile.BusinessAdminRoleEnum role;
 }
