@@ -26,16 +26,22 @@ public class BusinessItem {
     @Column(name = "business_id", nullable = false)
     private UUID businessId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_catalog_id", nullable = false)
     private ItemCatalog itemCatalog;
 
-    @Column(name = "base_price", nullable = false)
+    @Column(name = "base_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal basePrice;
 
-    @Column(name = "is_available")
+    @Column(name = "is_available", nullable = false)
     private boolean isAvailable;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    @PrePersist
+    @PreUpdate
+    protected void updateTimestamp() {
+        this.updatedAt = Instant.now();
+    }
 }

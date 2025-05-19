@@ -26,6 +26,7 @@ public class ItemCatalog {
     private String name;
 
     private String description;
+
     private String unit;
 
     @Column(name = "item_type")
@@ -36,9 +37,20 @@ public class ItemCatalog {
 
     private String subcategory;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }

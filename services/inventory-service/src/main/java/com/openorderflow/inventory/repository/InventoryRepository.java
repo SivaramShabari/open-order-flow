@@ -1,4 +1,4 @@
-package com.openorderflow.inventory;
+package com.openorderflow.inventory.repository;
 
 import com.openorderflow.inventory.entity.Inventory;
 import org.springframework.data.jpa.repository.JpaRepository;

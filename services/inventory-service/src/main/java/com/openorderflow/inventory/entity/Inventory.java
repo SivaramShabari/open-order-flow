@@ -25,6 +25,9 @@ public class Inventory {
     @Column(name = "business_id", nullable = false)
     private UUID businessId;
 
+    @Column(name = "business_outlet_id", nullable = false)
+    private UUID businessOutletId;
+
     @Column(name = "location_name", nullable = false)
     private String locationName;
 
@@ -39,4 +42,10 @@ public class Inventory {
 
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    @PrePersist
+    @PreUpdate
+    protected void updateTimestamp() {
+        this.updatedAt = Instant.now();
+    }
 }

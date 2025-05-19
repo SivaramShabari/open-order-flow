@@ -1,4 +1,4 @@
-package com.openorderflow.customer.config;
+package com.openorderflow.common.kafka.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -13,7 +13,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 
 @Configuration
-public class KafkaProducerConfig {
+public class CommonKafkaProducerConfig {
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
