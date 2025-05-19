@@ -16,12 +16,12 @@ import javax.security.auth.login.AccountNotFoundException;
 public class CustomerOrderController {
     private final UserOrderService userOrderService;
 
-    @GetMapping("/checkUser")
+    @GetMapping("/user-check")
     public ResponseEntity<?> test(){
         return ResponseEntity.ok(CurrentUserContext.get());
     }
 
-    @PostMapping("/requestOrderCreation")
+    @PostMapping("/order-creation-request")
     public ResponseEntity<?> placeOrder(@Valid @RequestBody CustomerOrderCreationRequest request) throws AccountNotFoundException {
         userOrderService.requestOrderCreation(request);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

@@ -1,6 +1,5 @@
 package com.openorderflow.business.dto;
 
-import com.openorderflow.business.entity.BusinessUserProfile;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,13 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class BusinessUserCreationRequest {
+public class BusinessOwnerCreationRequestDto {
 
     @NotNull
     private String name;
@@ -25,5 +22,4 @@ public class BusinessUserCreationRequest {
 
     @NotNull
     private String phone;
-
 }

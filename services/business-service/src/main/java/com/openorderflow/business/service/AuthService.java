@@ -1,12 +1,11 @@
 package com.openorderflow.business.service;
 
-import com.openorderflow.business.dto.BusinessCreationRequest;
-import com.openorderflow.business.dto.BusinessUserCreationRequest;
+import com.openorderflow.business.dto.BusinessCreationRequestDto;
+import com.openorderflow.business.dto.BusinessOwnerCreationRequestDto;
+import com.openorderflow.business.dto.BusinessUserProfileCreationDto;
 import com.openorderflow.business.dto.OtpVerifyResponse;
-import com.openorderflow.business.entity.Business;
-import com.openorderflow.business.entity.BusinessOutlet;
 import com.openorderflow.business.entity.BusinessUserProfile;
-import com.openorderflow.business.mapper.BusinessUserProfileMapper;
+import com.openorderflow.business.mapper.BusinessMapper;
 import com.openorderflow.business.repository.BusinessOutletRepository;
 import com.openorderflow.business.repository.BusinessRepository;
 import com.openorderflow.business.repository.BusinessUserProfileRepository;
@@ -36,8 +35,8 @@ public class AuthService {
     private final BusinessRepository businessRepository;
     private final BusinessOutletRepository businessOutletRepository;
     private final OtpServiceClient otpServiceClient;
-    private final BusinessUserProfileMapper businessUserProfileMapper;
     private final JwtUtils jwtUtils;
+    private final BusinessMapper businessMapper;
 
     public void getOtpForPhoneNumber(PhoneLoginRequest phoneLoginRequest) throws AccountNotFoundException {
         validateUser(phoneLoginRequest.phone());
@@ -57,39 +56,29 @@ public class AuthService {
 
         var jwtToken = jwtUtils.generateToken(otpVerifyRequest.phone(), jwtClaims, Duration.ofDays(7));
 
-        return new OtpVerifyResponse(businessUserProfileMapper.toBusinessUserProfileDto(businessUserProfile), jwtToken);
+        return new OtpVerifyResponse(businessMapper.toBusinessUserProfileDto(businessUserProfile), jwtToken);
     }
 
-    public void createBusinessUserProfileRequest(BusinessCreationRequest businessCreationRequest) throws Exception {
-        validateNewBusiness(businessCreationRequest);
-        var businessOwner = new BusinessUserProfile().toBuilder()
-                .name(businessCreationRequest.getOwnerName())
-                .email(businessCreationRequest.getOwnerEmail())
-                .phone(businessCreationRequest.getOwnerPhone())
+    public void createBusinessUserProfileRequest(BusinessCreationRequestDto businessCreationRequestDto) throws Exception {
+        validateNewBusiness(businessCreationRequestDto);
+        var businessOwner = businessMapper.toEntity(businessCreationRequestDto.getOwner())
+                .toBuilder()
                 .role(BusinessUserProfile.BusinessAdminRoleEnum.OWNER)
                 .build();
-
         var createdProfile = businessUserProfileRepository.save(businessOwner);
 
-        var business = new Business().toBuilder()
+        var business = businessMapper.toEntity(businessCreationRequestDto.getBusiness())
+                .toBuilder()
                 .createdBy(createdProfile)
                 .updatedBy(createdProfile)
-                .name(businessCreationRequest.getBusinessName())
-                .type(businessCreationRequest.getBusinessType())
                 .build();
+
         var createdBusiness = businessRepository.save(business);
 
-        var businessOutlet = new BusinessOutlet().toBuilder()
-                .name(businessCreationRequest.getBusinessOutletName())
-                .business(createdBusiness)
-                .city(businessCreationRequest.getBusinessOutletCity())
-                .postalCode(businessCreationRequest.getBusinessOutletPostalCode())
-                .addressLine1(businessCreationRequest.getBusinessOutletAddressLine1())
-                .addressLine2(businessCreationRequest.getBusinessOutletAddressLine2())
-                .addressLine3(businessCreationRequest.getBusinessOutletAddressLine3())
-                .latitude(businessCreationRequest.getBusinessOutletLatitude())
-                .longitude(businessCreationRequest.getBusinessOutletLongitude())
-                .build();
+        var businessOutlet = businessMapper.toEntity(businessCreationRequestDto.getOutlet())
+                        .toBuilder()
+                        .business(createdBusiness)
+                        .build();
 
         businessOutletRepository.save(businessOutlet);
 
@@ -101,9 +90,9 @@ public class AuthService {
         }
     }
 
-    public void createNewBusinessUser(BusinessUserCreationRequest businessUserCreationRequest) throws AuthenticationException, NameNotFoundException {
+    public void createNewBusinessUser(BusinessUserProfileCreationDto businessUserProfileCreationDto) throws AuthenticationException, NameNotFoundException {
         var currentUser = businessUserProfileRepository.findById(UUID.fromString(CurrentUserContext.userId()));
-        var businessOutlet = businessOutletRepository.findById(businessUserCreationRequest.getBusinessOutletId());
+        var businessOutlet = businessOutletRepository.findById(businessUserProfileCreationDto.getBusinessOutletId());
 
         if(currentUser.isEmpty() || businessOutlet.isEmpty())
             throw new NameNotFoundException("Invalid user or business outlet Id");
@@ -122,9 +111,9 @@ public class AuthService {
         var newBusinessUser = new BusinessUserProfile().toBuilder()
                 .businessOutlet(businessOutlet.get())
                 .business(currentUser.get().getBusiness())
-                .phone(businessUserCreationRequest.getPhone())
-                .email(businessUserCreationRequest.getEmail())
-                .role(businessUserCreationRequest.getRole())
+                .phone(businessUserProfileCreationDto.getPhone())
+                .email(businessUserProfileCreationDto.getEmail())
+                .role(businessUserProfileCreationDto.getRole())
                 .build();
 
         businessUserProfileRepository.save(newBusinessUser);
@@ -142,7 +131,7 @@ public class AuthService {
             throw new InvalidKeyException("Invalid OTP");
     }
 
-    private void validateNewBusiness(BusinessCreationRequest businessCreationRequest) throws Exception {
+    private void validateNewBusiness(BusinessCreationRequestDto businessCreationRequestDto) throws Exception {
         return;
     }
 }

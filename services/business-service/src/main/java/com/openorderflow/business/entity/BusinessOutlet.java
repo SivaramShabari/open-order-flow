@@ -40,6 +40,9 @@ public class BusinessOutlet {
     @Column(nullable = false)
     private String city;
 
+    @Column(nullable = false)
+    private String state;
+
     @Column(name = "postal_code", nullable = false)
     private int postalCode;
 

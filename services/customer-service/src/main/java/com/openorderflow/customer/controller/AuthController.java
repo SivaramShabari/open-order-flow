@@ -20,7 +20,7 @@ import java.security.InvalidKeyException;
 public class AuthController {
     private final AuthService authService;
 
-    @GetMapping(path = "/phoneLogin")
+    @GetMapping(path = "/phone-login")
     public ResponseEntity<?> phoneLogin(@Valid PhoneLoginRequest phoneLoginRequest) {
         try {
             authService.getOtpForPhoneNumber(phoneLoginRequest);
@@ -31,7 +31,7 @@ public class AuthController {
         return ResponseEntity.ok("OTP sent to " + phoneLoginRequest.phone());
     }
 
-    @GetMapping(path = "/verifyOtp")
+    @GetMapping(path = "/verify-otp")
     public ResponseEntity<?> phoneLogin(@Valid OtpVerifyRequest otpVerifyRequest) {
         try {
             var response = authService.verifyOtp(otpVerifyRequest);
@@ -45,7 +45,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping(path = "/signUp")
+    @PostMapping(path = "/sign-up")
     public ResponseEntity<?> signUpAndSendOtp(@Valid @RequestBody CustomerProfileCreationRequest createCustomerProfileRequest) throws Exception {
         authService.createCustomerProfileRequest(createCustomerProfileRequest);
         return ResponseEntity.ok("OTP Sent");
