@@ -44,6 +44,9 @@ public class BusinessOutlet {
     @Column(nullable = false)
     private String state;
 
+    @Column(nullable = false)
+    private Boolean isActive = false;
+
     @Column(name = "postal_code", nullable = false)
     private int postalCode;
 

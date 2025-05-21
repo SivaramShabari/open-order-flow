@@ -1,5 +1,6 @@
 package com.openorderflow.common.dto.customer;
 
+import com.openorderflow.common.common.GeoLocation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +35,6 @@ public class CustomerProfileDto {
         private String timings;
         private String addressLine1;
         private String addressLine2;
-        private Double geoLatitude;
-        private Double geoLongitude;
+        private GeoLocation geoLocation;
     }
 }

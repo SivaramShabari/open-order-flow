@@ -1,5 +1,6 @@
 package com.openorderflow.common.dto.order;
 
+import com.openorderflow.common.common.GeoLocation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -47,14 +48,5 @@ public class OrderMapperDto {
         private String city;
         private String state;
         private GeoLocation location;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class GeoLocation {
-        private Double latitude;
-        private Double longitude;
     }
 }

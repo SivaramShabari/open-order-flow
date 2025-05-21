@@ -1,5 +1,6 @@
 package com.openorderflow.common.kafka.events.v1.order;
 
+import com.openorderflow.common.common.GeoLocation;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -108,14 +109,5 @@ public class OrderPlacedEventV1 {
         private BigDecimal priceAtOrder;
         private BigDecimal discountedPriceAtOrder;
         private int quantity;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder(toBuilder = true)
-    public static class GeoLocation {
-        private Double latitude;
-        private Double longitude;
     }
 }

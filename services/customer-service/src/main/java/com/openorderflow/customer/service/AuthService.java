@@ -60,8 +60,7 @@ public class AuthService {
 
         var address = new CustomerAddress();
         address.setType("SIGN_UP_LOCATION");
-        address.setGeoLatitude(createCustomerProfileRequest.location().latitude());
-        address.setGeoLongitude(createCustomerProfileRequest.location().longitude());
+        address.setLocation(createCustomerProfileRequest.location());
         address.setProfile(customerProfile);
 
         var addresses = new ArrayList<CustomerAddress>();

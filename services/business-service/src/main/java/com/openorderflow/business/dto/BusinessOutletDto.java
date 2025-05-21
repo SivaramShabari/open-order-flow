@@ -1,7 +1,7 @@
 package com.openorderflow.business.dto;
 
-import com.openorderflow.business.entity.BusinessOutlet;
 import com.openorderflow.business.entity.BusinessUserProfile;
+import com.openorderflow.common.common.GeoLocation;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,10 +39,10 @@ public class BusinessOutletDto {
     private int postalCode;
 
     @NotNull
-    private BigDecimal latitude;
+    private Boolean isActive;
 
     @NotNull
-    private BigDecimal longitude;
+    private GeoLocation location;
 
     @Data
     @Builder
