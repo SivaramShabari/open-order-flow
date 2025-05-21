@@ -2,6 +2,7 @@ package com.openorderflow.business.controller;
 
 import com.openorderflow.business.dto.BusinessCreationRequestDto;
 import com.openorderflow.business.dto.BusinessOwnerCreationRequestDto;
+import com.openorderflow.business.dto.BusinessUserProfileCreationDto;
 import com.openorderflow.business.dto.OtpVerifyResponse;
 import com.openorderflow.business.service.AuthService;
 import com.openorderflow.common.auth.model.OtpVerifyRequest;
@@ -14,10 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
 
     @PostMapping("/send-otp")
@@ -53,14 +53,5 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/create-user")
-    public ResponseEntity<Void> createBusinessUser(@RequestBody @Valid BusinessOwnerCreationRequestDto request) {
-        try {
-            authService.createNewBusinessUser(request);
-            return ResponseEntity.ok().build();
-        } catch (Exception ex) {
-            log.error("Error creating new business user: {}", ex.getMessage());
-            return ResponseEntity.status(403).build(); // Unauthorized access
-        }
-    }
+
 }

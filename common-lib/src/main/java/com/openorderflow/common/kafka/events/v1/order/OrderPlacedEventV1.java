@@ -1,79 +1,121 @@
 package com.openorderflow.common.kafka.events.v1.order;
 
-import com.openorderflow.common.common.GeoLocation;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public record PlaceOrderEventV1(
-        @NotNull UUID customerId,
-        @NotNull String userName,
-        @NotNull String userPhone,
-        @NotNull String userEmail,
-        @NotNull Instant placedAt,
-        @NotNull @Size(min = 1) List<OrderItem> items,
-        @NotNull OrderBusinessOutlet businessOutlet,
-        @NotNull OrderCoupon coupon,
-        @NotNull OrderPayment payment,
-        @NotNull  @Size(max = 200) String deliveryInstruction,
-        @NotNull OrderCustomerAddress customerAddress
-        ) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class OrderPlacedEventV1 {
 
-    public record OrderItem(
-            @NotNull UUID businessItemId,
-            @NotNull String itemName,
-            @NotNull String itemDescription,
-            @NotNull UUID inventoryId,
-            @NotNull String itemCategory,
-            @Min(1) Integer quantity,
-            @NotNull BigDecimal unitPrice,
-            @NotNull BigDecimal totalPrice,
-            @NotNull BigDecimal couponDiscountAmount
-    ) {
+    @NotNull
+    private UUID orderId;
+
+    @NotNull
+    private Instant placedAt;
+
+    @NotNull
+    private CustomerSnapshot customer;
+
+    @NotNull
+    private BusinessSnapshot business;
+
+    @NotNull
+    private DeliveryLocation deliveryLocation;
+
+    @NotNull
+    @Size(min = 1)
+    private List<OrderItemSnapshot> items;
+
+    @NotNull
+    private Boolean isPaid;
+
+    private UUID paymentId;
+    private String paymentMode;
+    private String paymentType;
+    private Instant paidAt;
+
+    private UUID appliedCouponId;
+    private BigDecimal totalAmount;
+    private BigDecimal discountedAmount;
+
+    @Size(max = 200)
+    private String customerInstructions;
+
+    @NotNull
+    private UUID traceId;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder(toBuilder = true)
+    public static class CustomerSnapshot {
+        private UUID id;
+        private String name;
+        private String email;
+        private String phone;
     }
 
-    public record OrderBusinessOutlet(
-            @NotNull UUID businessOutletId,
-            @NotNull String businessOutletName,
-            @NotNull UUID businessId,
-            @NotNull GeoLocation geoLocation
-    ) {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder(toBuilder = true)
+    public static class BusinessSnapshot {
+        private UUID id;
+        private UUID outletId;
+        private String name;
+        private String outletName;
+        private String outletPhone;
+        private String outletAddress;
+
+        private GeoLocation location;
     }
 
-    public record OrderCoupon(
-            @NotNull UUID couponId,
-            @NotNull String couponCode,
-            @NotNull Integer discountPercentage,
-            @NotNull BigDecimal totalDiscountAmount,
-            @NotNull BigDecimal maxDiscountAmount,
-            @NotNull Instant appliedOn
-    ) {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder(toBuilder = true)
+    public static class DeliveryLocation {
+        private String name;
+        private String type;
+        private String addressLine1;
+        private String addressLine2;
+        private String addressLine3;
+        private String city;
+        private String state;
+        private GeoLocation location;
     }
 
-    public record OrderPayment(
-            @NotNull Boolean isPaid,
-            @NotNull String paymentMode,
-            UUID paymentId,
-            String paymentType,
-            Instant paidAt
-    ) {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder(toBuilder = true)
+    public static class OrderItemSnapshot {
+        private UUID id;
+        private String itemName;
+        private String itemDescription;
+        private String type;
+        private BigDecimal priceAtOrder;
+        private BigDecimal discountedPriceAtOrder;
+        private int quantity;
     }
 
-    public record OrderCustomerAddress(
-            @NotNull UUID customerAddressId,
-            @NotNull String locationName,
-            @NotNull GeoLocation location,
-            @NotNull String addressLine1,
-            @NotNull Integer postalCode,
-            @NotNull String city,
-            @NotNull String state,
-            String addressLine2,
-            String customerAddressNote
-    ){
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder(toBuilder = true)
+    public static class GeoLocation {
+        private Double latitude;
+        private Double longitude;
     }
 }

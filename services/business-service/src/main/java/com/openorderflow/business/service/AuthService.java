@@ -1,7 +1,6 @@
 package com.openorderflow.business.service;
 
 import com.openorderflow.business.dto.BusinessCreationRequestDto;
-import com.openorderflow.business.dto.BusinessOwnerCreationRequestDto;
 import com.openorderflow.business.dto.BusinessUserProfileCreationDto;
 import com.openorderflow.business.dto.OtpVerifyResponse;
 import com.openorderflow.business.entity.BusinessUserProfile;

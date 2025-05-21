@@ -1,32 +1,39 @@
-package com.openorderflow.inventory;
+package com.openorderflow.inventory.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.openorderflow.inventory.entity.ItemCatalog;
+import com.openorderflow.inventory.service.ItemCatalogService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/item-catalog")
+@RequestMapping("/inventory/item-catalog")
 @RequiredArgsConstructor
 public class ItemCatalogController {
 
     private final ItemCatalogService itemCatalogService;
 
     @PostMapping
-    public ResponseEntity<ItemCatalogResponse> create(@RequestBody @Valid ItemCatalogRequest request) {
-        return ResponseEntity.ok(itemCatalogService.createItem(request));
+    public ResponseEntity<ItemCatalog> create(@RequestBody @Valid ItemCatalog request) {
+        return ResponseEntity.ok(itemCatalogService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemCatalogResponse> update(@PathVariable UUID id, @RequestBody @Valid ItemCatalogRequest request) {
-        return ResponseEntity.ok(itemCatalogService.updateItem(id, request));
+    public ResponseEntity<ItemCatalog> update(@PathVariable UUID id, @RequestBody @Valid ItemCatalog request) {
+        return ResponseEntity.ok(itemCatalogService.update(id, request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemCatalogResponse> get(@PathVariable UUID id) {
+    public ResponseEntity<ItemCatalog> get(@PathVariable UUID id) {
         return ResponseEntity.ok(itemCatalogService.getById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemCatalogResponse>> getAll() {
+    public ResponseEntity<List<ItemCatalog>> getAll() {
         return ResponseEntity.ok(itemCatalogService.getAll());
     }
 

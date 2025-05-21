@@ -5,9 +5,7 @@ import com.openorderflow.common.dto.business.FeedRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class BusinessFeedController {
     private final BusinessFeedService feedService;
 
-    @GetMapping
-    public ResponseEntity<?> getFeedForUser(@Valid FeedRequestDto feedRequest){
+    @PostMapping
+    public ResponseEntity<?> getFeedForUser(@Valid @RequestBody FeedRequestDto feedRequest){
         var businesses = feedService.getBusinessesInProximity(feedRequest);
         return ResponseEntity.ok(businesses);
     }

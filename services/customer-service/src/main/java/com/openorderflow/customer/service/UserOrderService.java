@@ -24,8 +24,9 @@ public class UserOrderService {
         var customerProfile = customerProfileRepository.findById(UUID.fromString(CurrentUserContext.userId()));
         if (customerProfile.isEmpty())
             throw new AccountNotFoundException("User not found in profile");
-
+        // TODO add redis API rate limiter for customer order limits, for ensuring idempotency
         var enrichedEvent = reqOrderEvent.toBuilder()
+                .orderId(UUID.randomUUID())
                 .customerId(customerProfile.get().getId())
                 .customerName(customerProfile.get().getName())
                 .customerEmail(customerProfile.get().getEmail())

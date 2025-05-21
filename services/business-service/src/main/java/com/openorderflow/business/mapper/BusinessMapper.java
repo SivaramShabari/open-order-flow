@@ -1,13 +1,9 @@
 package com.openorderflow.business.mapper;
 
-import com.openorderflow.business.dto.BusinessDto;
-import com.openorderflow.business.dto.BusinessFeedDto;
-import com.openorderflow.business.dto.BusinessOutletDto;
-import com.openorderflow.business.dto.BusinessUserProfileCreationDto;
+import com.openorderflow.business.dto.*;
 import com.openorderflow.business.entity.Business;
 import com.openorderflow.business.entity.BusinessOutlet;
 import com.openorderflow.business.entity.BusinessUserProfile;
-import com.openorderflow.common.dto.business.BusinessUserProfileDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,9 +11,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BusinessMapper {
-    BusinessUserProfileDto toBusinessUserProfileDto(BusinessUserProfile businessUserProfile);
+    BusinessOutletDto.BusinessUserProfileDto toBusinessUserProfileDto(BusinessUserProfile businessUserProfile);
 
     BusinessUserProfile toEntity(BusinessUserProfileCreationDto dto);
+    BusinessUserProfile toEntity(BusinessOwnerCreationRequestDto dto);
     Business toEntity(BusinessDto dto);
     BusinessOutlet toEntity(BusinessOutletDto dto);
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class BusinessCreationRequestDto {
 
     @NotNull
-    private BusinessUserProfileCreationDto owner;
+    private BusinessOwnerCreationRequestDto owner;
 
     @NotNull
     private BusinessDto business;

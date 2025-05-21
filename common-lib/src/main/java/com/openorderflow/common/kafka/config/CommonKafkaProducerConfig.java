@@ -13,7 +13,8 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 
 @Configuration
-public class CommonKafkaProducerConfig {
+public class
+    CommonKafkaProducerConfig {
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;

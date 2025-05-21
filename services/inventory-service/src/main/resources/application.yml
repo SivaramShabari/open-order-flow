@@ -1,0 +1,25 @@
+logging:
+  level:
+    root: INFO
+    com.openorderflow: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventory_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # use 'validate' or 'none' in prod
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+
+kafka:
+  bootstrap-servers: localhost:9092

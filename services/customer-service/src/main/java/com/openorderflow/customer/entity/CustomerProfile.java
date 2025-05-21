@@ -23,17 +23,17 @@ public class CustomerProfile {
     @Column(name = "phone", nullable = false, unique = true, length = 10)
     private String phone;
 
-    @Column(name = "email", unique = true)
     @Email
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "is_email_verified", nullable = false)
-    private Boolean isEmailVerified;
+    private Boolean isEmailVerified = false;
 
     @OneToOne
     @JoinColumn(name="primary_address_id", foreignKey =  @ForeignKey(name = "fk_primary_address_customer"))
     private CustomerAddress primaryAddress;
 
-    @OneToOne(mappedBy = "profile",  cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile",  cascade = CascadeType.ALL, orphanRemoval = true)
     private  List<CustomerAddress> addresses;
 }

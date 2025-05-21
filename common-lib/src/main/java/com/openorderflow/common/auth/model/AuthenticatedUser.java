@@ -26,6 +26,8 @@ public record AuthenticatedUser(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null || role.isBlank())
+            return List.of(new SimpleGrantedAuthority("DEFAULT_ROLE"));
         return List.of(new SimpleGrantedAuthority(role));
     }
 

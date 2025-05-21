@@ -13,3 +13,9 @@ management:
 logging:
   level:
     com.openorderflow: DEBUG
+
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true

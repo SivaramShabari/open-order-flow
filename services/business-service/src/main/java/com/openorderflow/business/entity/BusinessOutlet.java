@@ -1,6 +1,7 @@
 package com.openorderflow.business.entity;
 
 
+import com.openorderflow.common.common.GeoLocation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,9 +47,6 @@ public class BusinessOutlet {
     @Column(name = "postal_code", nullable = false)
     private int postalCode;
 
-    @Column(name = "latitude", nullable = false, precision = 8)
-    private BigDecimal latitude;
-
-    @Column(name = "longitude", nullable = false, precision = 8)
-    private BigDecimal longitude;
+    @Embedded
+    private GeoLocation location;
 }

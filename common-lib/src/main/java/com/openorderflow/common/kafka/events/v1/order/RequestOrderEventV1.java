@@ -15,6 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class RequestOrderEventV1 {
+    @NotNull
+    private UUID orderId;
 
     @NotNull
     private UUID customerId;

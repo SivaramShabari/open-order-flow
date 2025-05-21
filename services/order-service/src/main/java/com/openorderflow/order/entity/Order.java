@@ -1,7 +1,9 @@
-package com.openorderflow.order;
+package com.openorderflow.order.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,48 +18,49 @@ import java.util.UUID;
 @Table(name = "order")
 public class Order {
     @Id
+    @GeneratedValue
+    @Column(name = "id")
     private UUID orderId;
 
-    @Column(name = "customer_id", nullable = false)
-    private UUID customerId;
+    @Embedded
+    private CustomerSnapshot customer;
 
-    @Column(name = "business_id", nullable = false)
-    private UUID businessId;
+    @Embedded
+    private BusinessSnapshot business;
 
-    @Column(name = "business_outlet_id", nullable = false)
-    private UUID businessOutletId;
+    @Embedded
+    private DeliveryPartnerSnapshot deliveryPartner;
 
-    @Column(name = "delivery_partner_id", nullable = true)
-    private UUID deliveryPartnerId;
+    @Embedded
+    private DeliveryLocation deliveryLocation;
 
-    @JoinColumn(name = "order_status_id", foreignKey = @ForeignKey(name = "order_order_status"))
-    @OneToOne
-    private OrderStatus orderStatus;
+    @Column(name = "order_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatusEnum orderStatus;
 
-    @Column(name = "payment_id", nullable = false)
+    @Column(name = "is_paid", nullable = false)
+    private Boolean isPaid = false;
+
+    @Column(name = "payment_id", nullable = true)
     private UUID paymentId;
-
-    @Column(name = "customer_delivery_address_id", nullable = false)
-    private UUID deliveryAddressId;
 
     @Column(name = "coupon_id")
     private UUID appliedCouponId;
 
+    @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
-    private BigDecimal totalDiscount;
+
+    @Column(name = "discounted_amount")
+    private BigDecimal discountedAmount;
 
     @Column(columnDefinition = "TEXT")
     private String customerInstructions;
 
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Instant createdAt;
 
-    @Column(name = "updated_at")
+    @UpdateTimestamp
     private Instant updatedAt;
-
-    @PrePersist
-    @PreUpdate
-    protected void updateTimestamp() {
-        this.updatedAt = Instant.now();
-    }
 
 }
