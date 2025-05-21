@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -30,9 +31,9 @@ public record PlaceOrderEventV1(
             @NotNull UUID inventoryId,
             @NotNull String itemCategory,
             @Min(1) Integer quantity,
-            @NotNull Float unitPrice,
-            @NotNull Float totalPrice,
-            @NotNull Float couponDiscountAmount
+            @NotNull BigDecimal unitPrice,
+            @NotNull BigDecimal totalPrice,
+            @NotNull BigDecimal couponDiscountAmount
     ) {
     }
 
@@ -48,8 +49,8 @@ public record PlaceOrderEventV1(
             @NotNull UUID couponId,
             @NotNull String couponCode,
             @NotNull Integer discountPercentage,
-            @NotNull Float totalDiscountAmount,
-            @NotNull Float maxDiscountAmount,
+            @NotNull BigDecimal totalDiscountAmount,
+            @NotNull BigDecimal maxDiscountAmount,
             @NotNull Instant appliedOn
     ) {
     }
