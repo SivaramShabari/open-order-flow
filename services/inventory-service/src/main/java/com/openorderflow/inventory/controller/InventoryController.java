@@ -1,7 +1,7 @@
 package com.openorderflow.inventory.controller;
 
+import com.openorderflow.common.dto.inventory.InventoryDto;
 import com.openorderflow.common.dto.inventory.InventoryRequest;
-import com.openorderflow.common.dto.inventory.InventoryResponse;
 import com.openorderflow.inventory.service.InventoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +18,22 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @PostMapping
-    public ResponseEntity<InventoryResponse> create(@RequestBody @Valid InventoryRequest request) {
+    public ResponseEntity<InventoryDto> create(@RequestBody @Valid InventoryRequest request) {
         return ResponseEntity.ok(inventoryService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InventoryResponse> update(@PathVariable UUID id, @RequestBody @Valid InventoryRequest request) {
+    public ResponseEntity<InventoryDto> update(@PathVariable UUID id, @RequestBody @Valid InventoryRequest request) {
         return ResponseEntity.ok(inventoryService.update(id, request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InventoryResponse> getById(@PathVariable UUID id) {
+    public ResponseEntity<InventoryDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(inventoryService.getById(id));
     }
 
     @GetMapping("/business-outlet/{outletId}")
-    public ResponseEntity<InventoryResponse> getAllByBusinessOutlet(@PathVariable UUID outletId) {
+    public ResponseEntity<InventoryDto> getAllByBusinessOutlet(@PathVariable UUID outletId) {
         return ResponseEntity.ok(inventoryService.getByBusinessOutlet(outletId));
     }
 

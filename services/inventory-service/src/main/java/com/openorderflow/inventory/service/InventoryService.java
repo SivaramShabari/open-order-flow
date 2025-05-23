@@ -1,7 +1,7 @@
 package com.openorderflow.inventory.service;
 
+import com.openorderflow.common.dto.inventory.InventoryDto;
 import com.openorderflow.common.dto.inventory.InventoryRequest;
-import com.openorderflow.common.dto.inventory.InventoryResponse;
 import com.openorderflow.inventory.repository.InventoryRepository;
 import com.openorderflow.inventory.entity.Inventory;
 import com.openorderflow.inventory.mapper.InventoryMapper;
@@ -19,13 +19,13 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final InventoryMapper inventoryMapper;
 
-    public InventoryResponse create(InventoryRequest request) {
+    public InventoryDto create(InventoryRequest request) {
         Inventory inventory = inventoryMapper.toEntity(request);
         inventory = inventoryRepository.save(inventory);
         return inventoryMapper.toResponse(inventory);
     }
 
-    public InventoryResponse update(UUID id, InventoryRequest request) {
+    public InventoryDto update(UUID id, InventoryRequest request) {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
 
@@ -40,13 +40,13 @@ public class InventoryService {
         return inventoryMapper.toResponse(inventory);
     }
 
-    public InventoryResponse getById(UUID id) {
+    public InventoryDto getById(UUID id) {
         return inventoryRepository.findById(id)
                 .map(inventoryMapper::toResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
     }
 
-    public InventoryResponse getByBusinessOutlet(UUID outletId) {
+    public InventoryDto getByBusinessOutlet(UUID outletId) {
         return inventoryMapper.toResponse(inventoryRepository.findByBusinessOutletId(outletId));
     }
 

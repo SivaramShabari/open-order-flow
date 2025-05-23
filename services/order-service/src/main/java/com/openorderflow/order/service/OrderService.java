@@ -9,7 +9,7 @@ import com.openorderflow.order.entity.Order;
 import com.openorderflow.order.entity.OrderEventHistory;
 import com.openorderflow.order.entity.OrderItem;
 import com.openorderflow.order.entity.OrderStatusEnum;
-import com.openorderflow.order.kafka.producer.KafkaProducer;
+import com.openorderflow.order.kafka.producer.OrderProducer;
 import com.openorderflow.order.mapper.OrderMapper;
 import com.openorderflow.order.repository.OrderEventHistoryRepository;
 import com.openorderflow.order.repository.OrderItemRepository;
@@ -34,7 +34,7 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
 
-    private final KafkaProducer kafkaProducer;
+    private final OrderProducer kafkaProducer;
 
     // === 1. Handle Order Creation Requested ===
     public void handleOrderCreationRequested(RequestOrderEventV1 event) {

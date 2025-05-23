@@ -3,8 +3,10 @@ package com.openorderflow.inventory.kafka.consumer;
 import com.openorderflow.common.kafka.events.v1.inventory.OrderItemsRejectedEventV1;
 import com.openorderflow.common.kafka.events.v1.inventory.OrderItemsValidatedEventV1;
 import com.openorderflow.common.kafka.events.v1.inventory.OrderItemsValidationRequestV1;
+import com.openorderflow.common.kafka.topics.KafkaTopicsV1;
 import com.openorderflow.inventory.kafka.producer.OrderItemsRejectedProducer;
 import com.openorderflow.inventory.kafka.producer.OrderItemsValidatedProducer;
+import com.openorderflow.inventory.service.BusinessItemService;
 import com.openorderflow.inventory.service.InventoryItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,12 +29,14 @@ import java.util.UUID;
 public class OrderItemValidationRequestConsumer {
 
     private final InventoryItemService inventoryItemService;
+    private final BusinessItemService businessItemService;
     private final OrderItemsValidatedProducer validatedProducer;
     private final OrderItemsRejectedProducer rejectedProducer;
 
     @KafkaListener(
-            topics = "order.validate.items.v1",
-            groupId = "inventory-service"
+            topics = KafkaTopicsV1.ORDER_ITEMS_VALIDATION_REQUEST_V1,
+            groupId = "inventory-service",
+            containerFactory = "orderValidationKafkaFactory"
     )
     public void consume(@Payload OrderItemsValidationRequestV1 request,
                         @Header(KafkaHeaders.KEY) String key,
@@ -50,10 +55,14 @@ public class OrderItemValidationRequestConsumer {
         }
 
         if (failedItems.isEmpty()) {
+            HashMap<UUID, Integer> map = new HashMap<>();
+            request.getItems()
+                    .forEach(item -> map.put(item.getBusinessItemId(), item.getQuantity()));
+            var items = businessItemService.getAllByIds(map);
             log.info("All items validated for order {}", request.getOrderId());
             validatedProducer.send(OrderItemsValidatedEventV1.builder()
+                    .validatedItems(items)
                     .orderId(request.getOrderId())
-                    .validated(true)
                     .validatedAt(Instant.now())
                     .build());
         } else {

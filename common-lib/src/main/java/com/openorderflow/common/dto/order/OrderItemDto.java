@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItemDto {
-    private UUID itemId;
+    private UUID businessItemId;
     private String name;
     private String description;
     private String type;

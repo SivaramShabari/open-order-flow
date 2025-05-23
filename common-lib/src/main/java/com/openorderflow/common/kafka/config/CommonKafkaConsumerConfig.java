@@ -11,20 +11,14 @@ import java.util.Map;
 
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-@Configuration
 public class CommonKafkaConsumerConfig {
 
-    @Value("${kafka.bootstrap-servers}")
-    private String bootstrapServers;
-
-    @Bean
-    public Map<String, Object> baseConsumerProps() {
+    public static Map<String, Object> baseConsumerProps(String bootstrapServers) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "java.lang.Object"); // override per bean
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.openorderflow.*");
         return props;
     }
 }

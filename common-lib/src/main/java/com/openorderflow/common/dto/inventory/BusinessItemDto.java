@@ -13,11 +13,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BusinessItemResponse {
+public class BusinessItemDto {
     private UUID id;
     private UUID businessId;
     private UUID itemCatalogId;
     private BigDecimal basePrice;
     private boolean isAvailable;
     private Instant updatedAt;
+    private Integer quantity;
 }

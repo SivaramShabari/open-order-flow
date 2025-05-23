@@ -1,6 +1,7 @@
 package com.openorderflow.inventory.kafka.producer;
 
 import com.openorderflow.common.kafka.events.v1.inventory.OrderItemsRejectedEventV1;
+import com.openorderflow.common.kafka.topics.KafkaTopicsV1;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,7 +15,7 @@ public class OrderItemsRejectedProducer {
     private final KafkaTemplate<String, OrderItemsRejectedEventV1> kafkaTemplate;
 
     public void send(OrderItemsRejectedEventV1 event) {
-        String topic = "order.items.rejected.v1";
+        String topic = KafkaTopicsV1.INVENTORY_ITEMS_REJECTED_V1;
         kafkaTemplate.send(topic, event.getOrderId().toString(), event);
         log.info("Produced: {} to topic {}", event, topic);
     }

@@ -11,10 +11,10 @@ import org.mapstruct.Mapping;
 public interface InventoryMapper {
 
     Inventory toEntity(InventoryRequest request);
-    InventoryResponse toResponse(Inventory inventory);
+    InventoryDto toResponse(Inventory inventory);
 
     BusinessItem toEntity(AddBusinessItemRequest request);
-    BusinessItemResponse toResponse(BusinessItem entity);
+    BusinessItemDto toResponse(BusinessItem entity);
 
     @Mapping(target = "inventory.id", source = "inventoryId")
     @Mapping(target = "businessItem.id", source = "businessItemId")
@@ -22,6 +22,6 @@ public interface InventoryMapper {
 
     @Mapping(source = "inventory.id", target = "inventoryId")
     @Mapping(source = "businessItem.id", target = "businessItemId")
-    InventoryItemResponse toResponse(InventoryItem entity);
+    InventoryItemDto toResponse(InventoryItem entity);
 }
 

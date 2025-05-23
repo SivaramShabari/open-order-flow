@@ -1,7 +1,7 @@
 package com.openorderflow.inventory.service;
 
 import com.openorderflow.common.dto.inventory.AddInventoryItemRequest;
-import com.openorderflow.common.dto.inventory.InventoryItemResponse;
+import com.openorderflow.common.dto.inventory.InventoryItemDto;
 import com.openorderflow.common.dto.inventory.UpdateInventoryItemRequest;
 import com.openorderflow.inventory.entity.BusinessItem;
 import com.openorderflow.inventory.entity.Inventory;
@@ -14,7 +14,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ public class InventoryItemService {
     private final BusinessItemRepository businessItemRepository;
     private final InventoryMapper inventoryMapper;
 
-    public InventoryItemResponse add(AddInventoryItemRequest request) {
+    public InventoryItemDto add(AddInventoryItemRequest request) {
         Inventory inventory = inventoryRepository.findById(request.getInventoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
 
@@ -50,7 +49,7 @@ public class InventoryItemService {
         return inventoryMapper.toResponse(inventoryItemRepository.save(entity));
     }
 
-    public InventoryItemResponse update(UUID id, UpdateInventoryItemRequest request) {
+    public InventoryItemDto update(UUID id, UpdateInventoryItemRequest request) {
         InventoryItem item = inventoryItemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("InventoryItem not found"));
 
@@ -62,13 +61,13 @@ public class InventoryItemService {
         return inventoryMapper.toResponse(inventoryItemRepository.save(item));
     }
 
-    public InventoryItemResponse getById(UUID id) {
+    public InventoryItemDto getById(UUID id) {
         return inventoryItemRepository.findById(id)
                 .map(inventoryMapper::toResponse)
                 .orElseThrow(() -> new EntityNotFoundException("InventoryItem not found"));
     }
 
-    public List<InventoryItemResponse> getAllByInventory(UUID inventoryId) {
+    public List<InventoryItemDto> getAllByInventory(UUID inventoryId) {
         return inventoryItemRepository.findByInventoryId(inventoryId)
                 .stream()
                 .map(inventoryMapper::toResponse)
