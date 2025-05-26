@@ -1,0 +1,43 @@
+logging:
+  level:
+    root: DEBUG
+    org.apache.kafka: WARN
+    org.apache.kafka.clients: WARN
+    org.springframework.kafka: WARN
+    org.springframework.boot.autoconfigure.kafka: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/business_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # use 'validate' or 'none' in prod
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+
+kafka:
+  bootstrap-servers: localhost:9092
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true

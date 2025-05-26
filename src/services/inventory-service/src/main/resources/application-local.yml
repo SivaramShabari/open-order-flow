@@ -1,0 +1,14 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /api/v1/
+
+
+logging:
+  level:
+    root: DEBUG
+    org.apache.kafka: WARN
+    org.apache.kafka.clients: WARN
+    org.springframework.kafka: WARN
+    org.springframework.boot.autoconfigure.kafka: WARN
+  pattern:
