@@ -21,6 +21,7 @@ public class OrderItemsValidatedEventConsumer {
             containerFactory = "orderValidationConsumerFactory"
     )
     public void consumeOrderItemValidation(OrderItemsValidatedEventV1 event) {
-        businessOrderService.
+        businessOrderService.addToOrderQueue(event);
+        log.info("Added new order to order_queue. {orderId} {}", event.getOrderId());
     }
 }

@@ -17,11 +17,11 @@ public class InventoryRequest {
     @NotNull
     private UUID businessOutletId;
 
+    @NotNull
+    private String name;
+
     @NotBlank
     private String locationName;
-
-    @NotNull
-    private Integer capacity;
 
     @NotBlank
     private String inventoryType;

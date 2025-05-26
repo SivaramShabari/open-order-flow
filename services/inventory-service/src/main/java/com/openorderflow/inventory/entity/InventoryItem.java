@@ -30,7 +30,6 @@ public class InventoryItem {
 
     @Id
     @GeneratedValue
-    @Column(name = "inventory_item_id")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)

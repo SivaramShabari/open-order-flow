@@ -18,9 +18,6 @@ public class OrderQueueActionRequestDto {
     private UUID orderQueueId;
 
     @NotNull
-    private UUID businessOutletId;
-
-    @NotNull
     private Action action;
 
     private String rejectionReason; // optional if action = REJECTED

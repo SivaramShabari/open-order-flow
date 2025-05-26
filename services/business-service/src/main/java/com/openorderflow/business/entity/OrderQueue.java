@@ -21,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@Table(name = "order_queue")
 public class OrderQueue {
     @Id
     @GeneratedValue
@@ -29,7 +30,7 @@ public class OrderQueue {
     @Column(nullable = false)
     private UUID orderId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private UUID customerId;
 
     @JoinColumn(name = "business_outlet_id", foreignKey = @ForeignKey(name = "order_queue_business_outlet"), nullable = false)

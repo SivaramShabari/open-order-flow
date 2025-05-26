@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8084
   servlet:
     context-path: /api/v1/
 
@@ -21,4 +21,3 @@ springdoc:
     enabled: true
   api-docs:
     enabled: true
-

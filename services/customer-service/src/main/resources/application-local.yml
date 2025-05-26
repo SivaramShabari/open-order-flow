@@ -1,5 +1,7 @@
 server:
-  port: 8085
+  port: 8082
+  servlet:
+    context-path: /api/v1/
 
 management:
   endpoints:

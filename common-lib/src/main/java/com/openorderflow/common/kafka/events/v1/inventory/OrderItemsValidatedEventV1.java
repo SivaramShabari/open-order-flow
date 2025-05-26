@@ -1,7 +1,5 @@
 package com.openorderflow.common.kafka.events.v1.inventory;
 
-import com.openorderflow.common.dto.business.OrderQueueResponseDto;
-import com.openorderflow.common.dto.inventory.BusinessItemDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,8 +28,15 @@ public class OrderItemsValidatedEventV1 {
     private BigDecimal amount;
 
     @NotNull
-    private List<OrderQueueResponseDto.OrderQueueItemDto> validatedItems;
+    private List<OrderQueueItem> validatedItems;
 
     @NotNull
     private Instant validatedAt;
+
+    public static class OrderQueueItem {
+        private UUID id;
+        private String name;
+        private int quantity;
+        private BigDecimal basePrice;
+    }
 }

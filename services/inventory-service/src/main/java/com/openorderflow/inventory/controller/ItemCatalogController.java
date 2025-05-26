@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/inventory/item-catalog")
+@RequestMapping("/item-catalog")
 @RequiredArgsConstructor
 public class ItemCatalogController {
 

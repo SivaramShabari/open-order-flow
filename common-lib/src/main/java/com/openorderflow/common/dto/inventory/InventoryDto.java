@@ -16,7 +16,6 @@ public class InventoryDto {
     private UUID id;
     private UUID businessOutletId;
     private String locationName;
-    private Integer capacity;
     private String inventoryType;
     private UUID createdBy;
     private Instant updatedAt;

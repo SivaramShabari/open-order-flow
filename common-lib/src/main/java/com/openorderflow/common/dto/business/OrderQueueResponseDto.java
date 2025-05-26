@@ -34,7 +34,7 @@ public class OrderQueueResponseDto {
     @AllArgsConstructor
     @Builder
     public static class OrderQueueItemDto {
-        private UUID itemId;
+        private UUID id;
         private String name;
         private int quantity;
         private BigDecimal basePrice;

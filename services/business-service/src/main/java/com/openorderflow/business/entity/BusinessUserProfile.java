@@ -15,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@Table(name = "business_user_profile")
 public class BusinessUserProfile {
     @Id
     @GeneratedValue

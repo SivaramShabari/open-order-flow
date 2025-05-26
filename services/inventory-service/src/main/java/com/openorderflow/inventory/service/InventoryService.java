@@ -29,9 +29,7 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
 
-        inventory.setBusinessId(request.getBusinessOutletId());
         inventory.setLocationName(request.getLocationName());
-        inventory.setCapacity(request.getCapacity());
         inventory.setInventoryType(request.getInventoryType());
         inventory.setCreatedBy(request.getCreatedBy());
         inventory.setUpdatedAt(Instant.now());

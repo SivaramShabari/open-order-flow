@@ -81,6 +81,8 @@ public class AuthService {
 
         businessOutletRepository.save(businessOutlet);
 
+
+
         try {
             getOtpForPhoneNumber(new PhoneLoginRequest(createdProfile.getPhone()));
         } catch (Exception ex) {
@@ -116,6 +118,8 @@ public class AuthService {
                 .build();
 
         businessUserProfileRepository.save(newBusinessUser);
+
+
     }
 
     private void validateUser(String phone) throws AccountNotFoundException {

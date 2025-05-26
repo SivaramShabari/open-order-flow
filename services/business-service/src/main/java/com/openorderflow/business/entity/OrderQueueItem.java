@@ -1,9 +1,7 @@
 package com.openorderflow.business.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,10 +16,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "order_queue_item")
 public class OrderQueueItem {
     @JoinColumn(name = "order_queue_id", nullable = false)
     private OrderQueue orderQueue;
 
+    @Id
+    @GeneratedValue
     @Column(nullable = false)
     private UUID id;
 

@@ -15,10 +15,9 @@ import java.util.UUID;
 @Builder
 public class BusinessItemDto {
     private UUID id;
-    private UUID businessId;
-    private UUID itemCatalogId;
+    private String name;
     private BigDecimal basePrice;
-    private boolean isAvailable;
-    private Instant updatedAt;
     private Integer quantity;
+    private UUID itemCatalogId;
+    private boolean isAvailable;
 }

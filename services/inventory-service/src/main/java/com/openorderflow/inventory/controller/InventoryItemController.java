@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/inventory/inventory-item")
+@RequestMapping("/inventory-item")
 @RequiredArgsConstructor
 public class InventoryItemController {
 

@@ -22,6 +22,9 @@ public class Inventory {
     @Column(name = "inventory_id")
     private UUID id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(name = "business_id", nullable = false)
     private UUID businessId;
 
@@ -31,11 +34,8 @@ public class Inventory {
     @Column(name = "location_name", nullable = false)
     private String locationName;
 
-    @Column(nullable = false)
-    private Integer capacity;
-
     @Column(name = "inventory_type", nullable = false)
-    private String inventoryType;
+    private String inventoryType = "DEFAULT";
 
     @Column(name = "created_by", nullable = false)
     private UUID createdBy;

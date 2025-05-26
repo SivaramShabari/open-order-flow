@@ -25,14 +25,16 @@ public class ItemCatalog {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String unit;
 
     @Column(name = "item_type")
     private String itemType;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
     private String subcategory;

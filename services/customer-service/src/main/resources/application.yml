@@ -23,3 +23,19 @@ spring:
 
 kafka:
   bootstrap-servers: localhost:9092
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true

@@ -1,6 +1,5 @@
 package com.openorderflow.business.entity;
 
-
 import com.openorderflow.common.common.GeoLocation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@Table(name = "business_outlet")
 public class BusinessOutlet {
 
     @Id
@@ -23,7 +23,7 @@ public class BusinessOutlet {
     private UUID id;
 
     @ManyToOne()
-    @JoinColumn(name = "business_outlet_id", nullable = false, foreignKey = @ForeignKey(name = "business_outlet_business"))
+    @JoinColumn(name = "business_id", nullable = false, foreignKey = @ForeignKey(name = "business_outlet_business"))
     private Business business;
 
     @Column(name = "name", nullable = false)

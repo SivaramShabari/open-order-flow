@@ -6,6 +6,7 @@ import com.openorderflow.common.kafka.events.v1.inventory.OrderItemsValidationRe
 import com.openorderflow.common.kafka.topics.KafkaTopicsV1;
 import com.openorderflow.inventory.kafka.producer.OrderItemsRejectedProducer;
 import com.openorderflow.inventory.kafka.producer.OrderItemsValidatedProducer;
+import com.openorderflow.inventory.mapper.InventoryMapper;
 import com.openorderflow.inventory.service.BusinessItemService;
 import com.openorderflow.inventory.service.InventoryItemService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class OrderItemValidationRequestConsumer {
     private final BusinessItemService businessItemService;
     private final OrderItemsValidatedProducer validatedProducer;
     private final OrderItemsRejectedProducer rejectedProducer;
+    private final InventoryMapper inventoryMapper;
 
     @KafkaListener(
             topics = KafkaTopicsV1.ORDER_ITEMS_VALIDATION_REQUEST_V1,
@@ -61,7 +63,7 @@ public class OrderItemValidationRequestConsumer {
             var items = businessItemService.getAllByIds(map);
             log.info("All items validated for order {}", request.getOrderId());
             validatedProducer.send(OrderItemsValidatedEventV1.builder()
-                    .validatedItems(items)
+                    .validatedItems(inventoryMapper.toEvent(items))
                     .orderId(request.getOrderId())
                     .validatedAt(Instant.now())
                     .build());
