@@ -13,26 +13,15 @@ import java.time.Instant;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> handleAnyException(Exception ex) {
-//        log.error("Unhandled exception", ex);
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(new ErrorResponse(
-//                        Instant.now(),
-//                        "INTERNAL_ERROR",
-//                        ex.getMessage()
-//                ));
-//    }
-
     @ExceptionHandler(Exception.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleAnyMonoException(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleAnyException(Exception ex) {
         log.error("Unhandled exception", ex);
-        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(
                         Instant.now(),
                         "INTERNAL_ERROR",
                         ex.getMessage()
-                )));
+                ));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

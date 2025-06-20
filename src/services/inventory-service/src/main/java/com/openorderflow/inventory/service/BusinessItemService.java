@@ -35,7 +35,7 @@ public class BusinessItemService {
                 .orElseThrow(() -> new EntityNotFoundException("BusinessItem not found"));
 
         if (request.getBasePrice() != null) item.setBasePrice(request.getBasePrice());
-        if (request.getIsAvailable() != null) item.setAvailable(request.getIsAvailable());
+        if (request.getIsAvailable() != null) item.setIsAvailable(request.getIsAvailable());
         item.setUpdatedAt(Instant.now());
 
         businessItemRepository.save(item);
@@ -58,5 +58,12 @@ public class BusinessItemService {
 
     public void delete(UUID id) {
         businessItemRepository.deleteById(id);
+    }
+
+    public List<BusinessItemDto> getAllByBusinessId(UUID businessId) {
+        return businessItemRepository.findAllByBusinessId(businessId)
+                .stream()
+                .map(inventoryMapper::toResponse)
+                .toList();
     }
 }

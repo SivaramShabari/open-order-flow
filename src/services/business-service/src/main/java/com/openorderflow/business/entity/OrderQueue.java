@@ -16,13 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Data
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @Table(name = "order_queue")
 public class OrderQueue {
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -30,18 +31,15 @@ public class OrderQueue {
     @Column(nullable = false)
     private UUID orderId;
 
-    @Column(nullable = true)
+    @Column
     private UUID customerId;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "business_outlet_id", foreignKey = @ForeignKey(name = "order_queue_business_outlet"), nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_outlet_id", nullable = false)
     private BusinessOutlet businessOutlet;
 
-    @OneToMany(mappedBy = "orderQueue", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<OrderQueueItem> items = new ArrayList<>();
-
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @NotNull
     private OrderBusinessStatusEnum status;
 
     @NotNull
@@ -53,8 +51,8 @@ public class OrderQueue {
     @UpdateTimestamp
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "orderQueue", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<OrderQueueItem> orderQueueItems;
+    @OneToMany(mappedBy = "orderQueue", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderQueueItem> orderQueueItems = new ArrayList<>();
 
     public enum OrderBusinessStatusEnum {
         RECEIVED,
@@ -63,3 +61,4 @@ public class OrderQueue {
         PREPARED
     }
 }
+

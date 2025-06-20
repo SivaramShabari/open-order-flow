@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -31,6 +32,11 @@ public class BusinessItemController {
     @GetMapping("/{id}")
     public ResponseEntity<BusinessItemDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(businessItemService.getById(id));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<BusinessItemDto>> getAll(UUID businessId) {
+        return ResponseEntity.ok(businessItemService.getAllByBusinessId(businessId));
     }
 
     @DeleteMapping("/{id}")

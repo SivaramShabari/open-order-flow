@@ -15,13 +15,11 @@ import com.openorderflow.common.auth.model.OtpVerifyRequest;
 import com.openorderflow.common.auth.model.PhoneLoginRequest;
 import com.openorderflow.common.auth.service.OtpServiceClient;
 import com.openorderflow.common.auth.util.CurrentUserContext;
-import com.openorderflow.common.dto.inventory.InventoryDto;
 import com.openorderflow.common.dto.inventory.InventoryRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import javax.naming.AuthenticationException;
 import javax.naming.NameNotFoundException;
@@ -53,7 +51,7 @@ public class AuthService {
         validateUser(otpVerifyRequest.phone());
         validateOtp(otpVerifyRequest);
 
-        var businessUserProfile = businessUserProfileRepository.getByPhone(otpVerifyRequest.phone());
+        var businessUserProfile = businessUserProfileRepository.findByPhone(otpVerifyRequest.phone());
 
         var jwtClaims = new HashMap<String, Object>();
         jwtClaims.put("userId", businessUserProfile.getId());
@@ -65,28 +63,21 @@ public class AuthService {
         return new OtpVerifyResponse(businessMapper.toBusinessUserProfileDto(businessUserProfile), jwtToken);
     }
 
-    public Mono<Void> createBusinessUserProfileRequest(BusinessCreationRequestDto dto) {
-        return Mono
-                .fromCallable(() -> createNewBusinessEntities(dto))
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(this::createInventoryWrapper)
-                .flatMap(this::sendOtpForNewUser);
+    public void createBusinessUserProfileRequest(BusinessCreationRequestDto dto) {
+       var wrapper = createNewBusinessEntities(dto);
+       var inventoryRequest = getInventoryRequest(wrapper);
+       inventoryService.createInventoryForOutlet(inventoryRequest);
+       sendOtpForNewUser(wrapper.profile().getPhone());
     }
 
     // <editor-fold desc="Business Creation Logic">
-    private InventoryRequestWrapper createNewBusinessEntities(BusinessCreationRequestDto dto) throws Exception{
+    private InventoryRequestWrapper createNewBusinessEntities(BusinessCreationRequestDto dto)  {
         validateNewBusiness(dto);
 
-        var businessOwner = businessMapper.toEntity(dto.getOwner())
-                .toBuilder()
-                .role(BusinessUserProfile.BusinessAdminRoleEnum.OWNER)
-                .build();
-        var createdProfile = businessUserProfileRepository.save(businessOwner);
+
 
         var business = businessMapper.toEntity(dto.getBusiness())
                 .toBuilder()
-                .createdBy(createdProfile)
-                .updatedBy(createdProfile)
                 .build();
 
         var createdBusiness = businessRepository.save(business);
@@ -96,12 +87,20 @@ public class AuthService {
                 .business(createdBusiness)
                 .build();
 
-        businessOutletRepository.save(businessOutlet);
+        var createdOutlet = businessOutletRepository.save(businessOutlet);
 
-        return new InventoryRequestWrapper(createdProfile, createdBusiness, businessOutlet);
+        var businessOwner = businessMapper.toEntity(dto.getOwner())
+                .toBuilder()
+                .role(BusinessUserProfile.BusinessAdminRoleEnum.OWNER)
+                .business(createdBusiness)
+                .businessOutlet(createdOutlet)
+                .build();
+        var createdProfile = businessUserProfileRepository.save(businessOwner);
+
+        return new InventoryRequestWrapper(createdProfile, createdBusiness, createdOutlet);
     }
 
-    private void validateNewBusiness(BusinessCreationRequestDto businessCreationRequestDto) throws Exception {
+    private void validateNewBusiness(BusinessCreationRequestDto businessCreationRequestDto) {
         return;
     }
 
@@ -114,12 +113,6 @@ public class AuthService {
                 throw new RuntimeException("Failed to send OTP", ex);
             }
         });
-    }
-
-    private Mono<String> createInventoryWrapper(InventoryRequestWrapper wrapper) {
-        return inventoryService
-                .createInventoryForOutlet(getInventoryRequest(wrapper))
-                .thenReturn(wrapper.profile().getPhone());
     }
 
     private InventoryRequest getInventoryRequest(InventoryRequestWrapper wrapper) {

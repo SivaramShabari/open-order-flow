@@ -1,5 +1,7 @@
 package com.openorderflow.business.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -17,9 +19,9 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @Table(name = "business_user_profile")
 public class BusinessUserProfile {
+
     @Id
     @GeneratedValue
-    @Column(name = "id")
     private UUID id;
 
     @Column(name = "phone", nullable = false, length = 13)
@@ -32,24 +34,26 @@ public class BusinessUserProfile {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "role")
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     private BusinessAdminRoleEnum role;
 
-    @OneToOne
-    @JoinColumn (name = "business_id", foreignKey = @ForeignKey(name = "business_user_business"), insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_id", nullable = false)
+    @JsonBackReference
     private Business business;
 
-    @OneToOne
-    @JoinColumn (name = "business_outlet_id", foreignKey = @ForeignKey(name = "business_user_outlet"), insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_outlet_id", nullable = false)
+    @JsonBackReference
     private BusinessOutlet businessOutlet;
 
-    public enum  BusinessAdminRoleEnum {
+    public enum BusinessAdminRoleEnum {
         OWNER,
         BUSINESS_ADMIN,
         OUTLET_ADMIN,
         INVENTORY_MANAGER,
         ORDER_MANAGER,
-        MENU_MANAGER,
+        MENU_MANAGER
     }
 }

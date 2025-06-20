@@ -17,5 +17,8 @@ public class AddBusinessItemRequest {
     @NotNull private UUID businessId;
     @NotNull private UUID itemCatalogId;
     @NotNull private BigDecimal basePrice;
-    private boolean isAvailable;
+    @NotNull private String name;
+    private String imageUrl;
+    @NotNull private Boolean isAvailable;
+
 }

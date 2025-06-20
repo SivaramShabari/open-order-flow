@@ -78,7 +78,7 @@ public class BusinessOrderService {
         var orderQueue = new OrderQueue().toBuilder()
                 .orderId(event.getOrderId())
                 .businessOutlet(BusinessOutlet.builder().id(event.getBusinessId()).build())
-                .items(orderQueueMapper.toEntityFromEvent(event.getValidatedItems()))
+                .orderQueueItems(orderQueueMapper.toEntityFromEvent(event.getValidatedItems()))
                 .orderAmount(event.getAmount())
                 .build();
         var newOrder = orderQueueRepository.save(orderQueue);

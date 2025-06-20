@@ -4,6 +4,7 @@ import com.openorderflow.common.common.AbstractHttpClient;
 import com.openorderflow.common.dto.inventory.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,27 +23,36 @@ public class InventoryClient extends AbstractHttpClient {
         super(webClientBuilder);
     }
 
-    public Mono<BusinessItemDto> createItem(AddBusinessItemRequest request) {
-        return post(baseUrl, "/business-item", request, typeOf());
+    public BusinessItemDto createItem(AddBusinessItemRequest request) {
+        BusinessItemDto response = post(baseUrl, "/business-item", request, new ParameterizedTypeReference<BusinessItemDto>() {});
+        return response;
     }
 
-    public Mono<InventoryDto> addInventory(InventoryRequest request) {
-        return post(baseUrl, "/inventory", request, typeOf());
+    public InventoryDto addInventory(InventoryRequest request) {
+        return post(baseUrl, "/inventory", request, new ParameterizedTypeReference<InventoryDto>() {});
     }
 
-    public Mono<List<ItemCategoryDto>> getItemCategories() {
-        return get(baseUrl, "/item-catalog", typeOf());
+    public List<ItemCategoryDto> getItemCategories() {
+        return get(baseUrl, "/item-catalog", new ParameterizedTypeReference<List<ItemCategoryDto>>() {});
     }
 
-    public Mono<List<InventoryItemDto>> getAllByInventory(UUID inventoryId) {
-        return get(baseUrl, "/inventory/" + inventoryId.toString(), typeOf());
+    public List<InventoryItemDto> getAllByInventory(UUID inventoryId) {
+        return get(baseUrl, "/inventory" + inventoryId.toString(), new ParameterizedTypeReference<List<InventoryItemDto>>() {});
     }
 
-    public Mono<Void> addInventoryItem(InventoryItemDto dto) {
-        return post(baseUrl, "/inventory-item", dto, typeOf());
+    public void addInventoryItem(InventoryItemDto dto) {
+        post(baseUrl, "/inventory-item", dto, new ParameterizedTypeReference<Void>() {});
     }
 
-    public Mono<Void> updateInventoryItem(InventoryItemDto dto) {
-        return put(baseUrl, "/inventory-item/" + dto.getId(), dto, typeOf());
+    public void updateInventoryItem(InventoryItemDto dto) {
+        put(baseUrl, "/inventory-item/" + dto.getId(), dto, new ParameterizedTypeReference<Void>() {});
+    }
+
+    public BusinessItemDto updateBusinessItem(BusinessItemDto request) {
+        return put(baseUrl, "/business-item/" + request.getId(), request, new ParameterizedTypeReference<BusinessItemDto>() {});
+    }
+
+    public List<BusinessItemDto> getBusinessItems(UUID businessId) {
+        return get(baseUrl, "/business-item/all?businessId=" + businessId, new ParameterizedTypeReference<List<BusinessItemDto>>() {});
     }
 }

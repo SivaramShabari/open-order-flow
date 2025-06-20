@@ -1,10 +1,7 @@
 logging:
   level:
-    root: DEBUG
-    org.apache.kafka: WARN
-    org.apache.kafka.clients: WARN
-    org.springframework.kafka: WARN
-    org.springframework.boot.autoconfigure.kafka: WARN
+    root: INFO
+    com.openorderflow: DEBUG
   pattern:
     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 

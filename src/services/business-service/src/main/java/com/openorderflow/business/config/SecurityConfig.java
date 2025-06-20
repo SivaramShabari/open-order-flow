@@ -1,4 +1,4 @@
-package com.openorderflow.common.auth.config;
+package com.openorderflow.business.config;
 
 import com.openorderflow.common.auth.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;

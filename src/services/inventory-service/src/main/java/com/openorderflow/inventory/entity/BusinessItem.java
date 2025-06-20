@@ -31,17 +31,20 @@ public class BusinessItem {
     @JoinColumn(name = "item_catalog_id", nullable = false)
     private ItemCatalog itemCatalog;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(name = "base_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal basePrice;
 
     @Column(name = "is_available", nullable = false)
-    private boolean isAvailable;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    private Boolean isAvailable;
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @PrePersist
     @PreUpdate

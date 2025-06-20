@@ -1,5 +1,6 @@
 package com.openorderflow.inventory.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,14 +24,14 @@ public class Inventory {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-
     @Column(name = "business_id", nullable = false)
     private UUID businessId;
 
     @Column(name = "business_outlet_id", nullable = false)
     private UUID businessOutletId;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column(name = "location_name", nullable = false)
     private String locationName;
@@ -37,8 +39,6 @@ public class Inventory {
     @Column(name = "inventory_type", nullable = false)
     private String inventoryType = "DEFAULT";
 
-    @Column(name = "created_by", nullable = false)
-    private UUID createdBy;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
@@ -50,5 +50,6 @@ public class Inventory {
     }
 
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InventoryItem> inventoryItems;
+    @JsonManagedReference
+    private List<InventoryItem> inventoryItems = new ArrayList<>();
 }

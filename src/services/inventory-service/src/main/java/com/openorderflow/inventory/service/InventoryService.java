@@ -31,7 +31,6 @@ public class InventoryService {
 
         inventory.setLocationName(request.getLocationName());
         inventory.setInventoryType(request.getInventoryType());
-        inventory.setCreatedBy(request.getCreatedBy());
         inventory.setUpdatedAt(Instant.now());
 
         inventory = inventoryRepository.save(inventory);

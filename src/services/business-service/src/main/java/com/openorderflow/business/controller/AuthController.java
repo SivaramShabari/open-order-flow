@@ -44,10 +44,8 @@ public class AuthController {
     }
 
     @PostMapping("/create-business")
-    public Mono<ResponseEntity<Void>> createBusiness(@RequestBody @Valid BusinessCreationRequestDto request) {
-        return authService.createBusinessUserProfileRequest(request)
-                .thenReturn(ResponseEntity.ok().build());
+    public ResponseEntity<Void> createBusiness(@RequestBody @Valid BusinessCreationRequestDto request) {
+        authService.createBusinessUserProfileRequest(request);
+        return ResponseEntity.ok().build();
     }
-
-
 }

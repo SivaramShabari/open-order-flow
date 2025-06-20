@@ -16,53 +16,53 @@ public abstract class AbstractHttpClient {
         this.webClientBuilder = webClientBuilder;
     }
 
-    protected <T> Mono<T> get(String baseUrl, String path, ParameterizedTypeReference<T> responseType) {
-        return webClientBuilder.baseUrl(baseUrl).build()
+    protected <T> T get(String baseUrl, String path, ParameterizedTypeReference<T> responseType) {
+        var response = webClientBuilder.baseUrl(baseUrl).build()
                 .get()
                 .uri(path)
                 .retrieve()
-                .onStatus(HttpStatusCode::is2xxSuccessful, this::handleSuccess)
                 .onStatus(HttpStatusCode::isError, this::handleError)
-                .bodyToMono(responseType);
+                .bodyToMono(responseType)
+                .block();
+        log.info("GET {} response: {}", path, response != null ? response.toString() : null);
+        return response;
     }
 
-    protected <T> Mono<T> post(String baseUrl, String path, Object body, ParameterizedTypeReference<T> responseType) {
-        return webClientBuilder.baseUrl(baseUrl).build()
+    protected <T> T post(String baseUrl, String path, Object body, ParameterizedTypeReference<T> responseType) {
+        var response =  webClientBuilder.baseUrl(baseUrl).build()
                 .post()
                 .uri(path)
                 .bodyValue(body)
                 .retrieve()
-                .onStatus(HttpStatusCode::is2xxSuccessful, this::handleSuccess)
                 .onStatus(HttpStatusCode::isError, this::handleError)
-                .bodyToMono(responseType);
+                .bodyToMono(responseType)
+                .block();
+
+        log.info("POST {} response: {}", path, response != null ? response.toString() : null);
+        return response;
     }
 
-    protected <T> Mono<T> put(String baseUrl, String path, Object body, ParameterizedTypeReference<T> responseType) {
-        return webClientBuilder.baseUrl(baseUrl).build()
+    protected <T> T put(String baseUrl, String path, Object body, ParameterizedTypeReference<T> responseType) {
+        var response =   webClientBuilder.baseUrl(baseUrl).build()
                 .put()
                 .uri(path)
                 .bodyValue(body)
                 .retrieve()
-                .onStatus(HttpStatusCode::is2xxSuccessful, this::handleSuccess)
                 .onStatus(HttpStatusCode::isError, this::handleError)
-                .bodyToMono(responseType);
+                .bodyToMono(responseType)
+                .block();
+        log.info("POST {} response: {}", path, response != null ? response.toString() : null);
+        return response;
     }
 
-    protected Mono<Void> delete(String baseUrl, String path) {
-        return webClientBuilder.baseUrl(baseUrl).build()
+    protected void delete(String baseUrl, String path) {
+        webClientBuilder.baseUrl(baseUrl).build()
                 .delete()
                 .uri(path)
                 .retrieve()
-                .onStatus(HttpStatusCode::is2xxSuccessful, this::handleSuccess)
                 .onStatus(HttpStatusCode::isError, this::handleError)
-                .bodyToMono(Void.class);
-    }
-
-    protected Mono<? extends Throwable> handleSuccess(ClientResponse response) {
-        return response.bodyToMono(String.class).flatMap(body -> {
-            log.info("Default HTTP success handler: {} - {}", response.statusCode(), body);
-            return Mono.empty();
-        });
+                .bodyToMono(Void.class)
+                .block();
     }
 
     /**
@@ -73,9 +73,5 @@ public abstract class AbstractHttpClient {
             log.error("Default HTTP error handler: {} - {}", response.statusCode(), body);
             return Mono.error(new RuntimeException("HTTP " + response.statusCode() + ": " + body));
         });
-    }
-
-    protected <T> ParameterizedTypeReference<T> typeOf() {
-        return new ParameterizedTypeReference<T>() {};
     }
 }

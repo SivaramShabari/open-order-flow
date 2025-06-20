@@ -21,34 +21,42 @@ public class BusinessInventoryService {
     private final InventoryClient inventoryClient;
     private final BusinessUserProfileRepository businessUserProfileRepository;
 
+    public BusinessItemDto addBusinessItem(AddBusinessItemRequest addBusinessItemRequest) throws UnauthorizedException {
+        var userId = UUID.fromString(CurrentUserContext.userId());
+        var profile = businessUserProfileRepository.findById(userId).get();
 
-    public Mono<BusinessItemDto> addBusinessItem(AddBusinessItemRequest addBusinessItemRequest) {
-        return Mono.justOrEmpty(CurrentUserContext.userId())
-                .map(userId -> businessUserProfileRepository.findById(UUID.fromString(userId)).get())
-                .switchIfEmpty(Mono.error(new UnauthorizedException("User not found")))
-                .flatMap(profile -> {
-                    if (profile.getRole() != BusinessUserProfile.BusinessAdminRoleEnum.BUSINESS_ADMIN &&
-                            profile.getRole() != BusinessUserProfile.BusinessAdminRoleEnum.OWNER) {
-                        return Mono.error(new UnauthorizedException("Business user cannot add items"));
-                    }
-                    return inventoryClient.createItem(addBusinessItemRequest)
-                            .doOnSuccess(res -> log.info("Business item created."));
-                });
+        if (businessUserProfileRepository.findById(UUID.fromString(CurrentUserContext.userId())).isEmpty())
+            throw new UnauthorizedException("User not found");
+
+        if (profile.getRole() != BusinessUserProfile.BusinessAdminRoleEnum.BUSINESS_ADMIN &&
+                profile.getRole() != BusinessUserProfile.BusinessAdminRoleEnum.OWNER) {
+            throw new UnauthorizedException("Business user cannot add items");
+        }
+        addBusinessItemRequest.setBusinessId(profile.getBusiness().getId());
+        return inventoryClient.createItem(addBusinessItemRequest);
     }
 
-    public Mono<InventoryDto> createInventoryForOutlet(InventoryRequest request) {
+    public InventoryDto createInventoryForOutlet(InventoryRequest request) {
         return inventoryClient.addInventory(request);
     }
 
-    public Mono<List<ItemCategoryDto>> getItemCategories() {
+    public List<ItemCategoryDto> getItemCategories() {
         return inventoryClient.getItemCategories();
     }
 
     // for both saving and updating
-    public Mono<Void> saveInventoryItem(InventoryItemDto dto) {
+    public void saveInventoryItem(InventoryItemDto dto) {
         if (dto.getId() == null)
-            return inventoryClient.addInventoryItem(dto);
-        return inventoryClient.updateInventoryItem(dto);
+            inventoryClient.addInventoryItem(dto);
+        else
+            inventoryClient.updateInventoryItem(dto);
     }
 
+    public BusinessItemDto updateBusinessItem(BusinessItemDto dto) {
+        return inventoryClient.updateBusinessItem(dto);
+    }
+
+    public List<BusinessItemDto> getBusinessItems(UUID businessId) {
+        return inventoryClient.getBusinessItems(businessId);
+    }
 }

@@ -19,6 +19,5 @@
         <module>src/services/order-service</module>
         <module>src/services/payment-service</module>
         <module>src/common-lib</module>
-        <module>src/security-lib</module>
     </modules>
 </project>

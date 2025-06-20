@@ -1,6 +1,7 @@
 package com.openorderflow.inventory.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import java.util.UUID;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uq_inventory_item",
-                        columnNames = {"inventory_id", "item_catalog_id"}
+                        columnNames = {"inventory_id", "business_item_id"}
                 )
         }
 )
@@ -34,10 +35,11 @@ public class InventoryItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_id", nullable = false)
+    @JsonBackReference
     private Inventory inventory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "business_item_id", nullable = false)
+    @JoinColumn(name = "business_item_id", nullable = false, unique = true)
     private BusinessItem businessItem;
 
     @Column(name = "arrival_date")

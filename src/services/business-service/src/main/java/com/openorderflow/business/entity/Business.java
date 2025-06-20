@@ -1,20 +1,25 @@
 package com.openorderflow.business.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder(toBuilder = true)
 @Table(name = "business")
 public class Business {
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -25,11 +30,11 @@ public class Business {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "createdBy", nullable = false)
-    private BusinessUserProfile createdBy;
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<BusinessOutlet> businessOutlets = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "updatedBy", nullable = false)
-    private BusinessUserProfile updatedBy;
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<BusinessUserProfile> businessUsers = new ArrayList<>();
 }

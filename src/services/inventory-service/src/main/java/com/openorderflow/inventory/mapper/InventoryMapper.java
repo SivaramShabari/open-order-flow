@@ -16,7 +16,11 @@ public interface InventoryMapper {
     Inventory toEntity(InventoryRequest request);
     InventoryDto toResponse(Inventory inventory);
 
+    @Mapping(target = "itemCatalog.id", source = "itemCatalogId")
+    @Mapping(source = "isAvailable", target = "isAvailable")
     BusinessItem toEntity(AddBusinessItemRequest request);
+
+    @Mapping(target = "itemCatalogId", source = "itemCatalog.id")
     BusinessItemDto toResponse(BusinessItem entity);
 
     @Mapping(target = "inventory.id", source = "inventoryId")

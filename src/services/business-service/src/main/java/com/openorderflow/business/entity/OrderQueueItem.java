@@ -14,18 +14,17 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Table(name = "order_queue_item")
 public class OrderQueueItem {
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "order_queue_id", nullable = false)
-    private OrderQueue orderQueue;
-
     @Id
     @GeneratedValue
-    @Column(nullable = false)
     private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_queue_id", nullable = false)
+    private OrderQueue orderQueue;
 
     @Column(nullable = false)
     private String name;
