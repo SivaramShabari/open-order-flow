@@ -20,8 +20,8 @@ import java.util.UUID;
 public class OrderEventHistory {
     @Id
     @GeneratedValue
-    @Column(name = "id")
-    private UUID id;
+    @Column(name = "orderEventHistoryId")
+    private UUID orderEventHistoryId;
 
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "order_history_order_id"), nullable = false)
     @ManyToOne(cascade = CascadeType.DETACH)

@@ -12,8 +12,8 @@ import java.util.UUID;
 @Builder
 @Embeddable
 public class CustomerSnapshot {
-    private UUID id;
-    private String name;
-    private String email;
-    private String phone;
+    private UUID customerId;
+    private String customerName;
+    private String customerEmail;
+    private String customerPhone;
 }

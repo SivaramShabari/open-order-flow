@@ -14,10 +14,10 @@ import java.util.UUID;
 @Builder
 @Embeddable
 public class DeliveryPartnerSnapshot {
-    private UUID id;
-    private String name;
-    private String email;
-    private String phone;
+    private UUID deliveryPartnerId;
+    private String deliveryPartnerName;
+    private String deliveryPartnerEmail;
+    private String deliveryPartnerPhone;
     @Embedded
-    private GeoLocation starting_location;
+    private GeoLocation deliveryPartnerStartingLocation;
 }

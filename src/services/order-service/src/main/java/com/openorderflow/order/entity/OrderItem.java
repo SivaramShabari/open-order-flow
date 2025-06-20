@@ -18,7 +18,7 @@ import java.util.UUID;
 public class OrderItem {
     @Id
     @GeneratedValue
-    @Column(name = "id")
+    @Column(name = "order_item_id")
     private UUID orderItemId;
 
     @JoinColumn(name = "order_item_order_id", nullable = false)

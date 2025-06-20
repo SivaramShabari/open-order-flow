@@ -5,13 +5,13 @@ import jakarta.persistence.*;
 
 @Embeddable
 public class DeliveryLocation {
-    private String name;
-    private String type;
-    private String addressLine1;
-    private String addressLine2;
-    private String addressLine3;
-    private String city;
-    private String state;
+    private String deliverLocationName;
+    private String deliverLocationType;
+    private String deliverLocationAddressLine1;
+    private String deliverLocationAddressLine2;
+    private String deliverLocationAddressLine3;
+    private String deliverLocationCity;
+    private String deliverLocationState;
 
     @Embedded
     @AttributeOverrides({

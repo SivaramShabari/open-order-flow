@@ -34,14 +34,14 @@ public abstract class OrderMapper {
     @AfterMapping
     protected void enrichOrderFromRequest(RequestOrderEventV1 event, @MappingTarget Order order) {
         order.setCustomer(CustomerSnapshot.builder()
-                .id(event.getCustomerId())
-                .name(event.getCustomerName())
-                .email(event.getCustomerEmail())
-                .phone(event.getCustomerPhone())
+                .customerId(event.getCustomerId())
+                .customerName(event.getCustomerName())
+                .customerEmail(event.getCustomerEmail())
+                .customerPhone(event.getCustomerPhone())
                 .build());
 
         order.setBusiness(BusinessSnapshot.builder()
-                .outletId(event.getBusinessOutletId())
+                .businessOutletId(event.getBusinessOutletId())
                 .build()); // further enrichment after inv validation
 
         order.setCustomerInstructions(event.getDeliveryInstruction());

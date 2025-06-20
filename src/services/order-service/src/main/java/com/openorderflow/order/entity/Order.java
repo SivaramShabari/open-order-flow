@@ -15,24 +15,36 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Table(name = "order")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue
-    @Column(name = "id")
+    @Column(name = "orderId")
     private UUID orderId;
 
     @Embedded
     private CustomerSnapshot customer;
 
     @Embedded
-    private BusinessSnapshot business;
+    @AttributeOverrides({
+            @AttributeOverride(name = "location.latitude", column = @Column(name = "delivery_location_latitude")),
+            @AttributeOverride(name = "location.longitude", column = @Column(name = "delivery_location_longitude"))
+    })
+    private DeliveryLocation deliveryLocation;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "startingLocation.latitude", column = @Column(name = "delivery_partner_latitude")),
+            @AttributeOverride(name = "startingLocation.longitude", column = @Column(name = "delivery_partner_longitude"))
+    })
     private DeliveryPartnerSnapshot deliveryPartner;
 
     @Embedded
-    private DeliveryLocation deliveryLocation;
+    @AttributeOverrides({
+            @AttributeOverride(name = "location.latitude", column = @Column(name = "business_outlet_latitude")),
+            @AttributeOverride(name = "location.longitude", column = @Column(name = "business_outlet_longitude"))
+    })
+    private BusinessSnapshot business;
 
     @Column(name = "order_status", nullable = false)
     @Enumerated(EnumType.STRING)

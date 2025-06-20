@@ -14,10 +14,10 @@ import java.util.UUID;
 @Builder
 @Embeddable
 public class BusinessItemSnapshot {
-    private UUID id;
-    private String itemName;
-    private String itemDescription;
-    private String type;
-    private BigDecimal priceAtOrder;
-    private BigDecimal discountedPriceAtOrder;
+    private UUID businessItemId;
+    private String businessItemName;
+    private String businessItemDescription;
+    private String businessItemType;
+    private BigDecimal businessItemPriceAtOrder;
+    private BigDecimal businessItemDiscountedPriceAtOrder;
 }

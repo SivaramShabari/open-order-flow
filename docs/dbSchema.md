@@ -1,204 +1,244 @@
-# 🗃️ OpenOrderFlow – Service-Oriented DB Schema
+# 🗃️ OpenOrderFlow - Complete Database Schema
 
-This document outlines database tables grouped by service ownership. All foreign keys between services are removed in favor of application-level validation and event-based consistency.
+
+Note that there are 4 individual DBs, so there is no join across DBs
+---
+
+
+## 🧩 Business DB
+
+### 📄 business_user_profile
+
+| Column             | Type          |
+|--------------------|---------------|
+| id                 | uuid          |
+| business_id        | uuid          |
+| business_outlet_id | uuid          |
+| email              | varchar(255)  |
+| name               | varchar(255)  |
+| phone              | varchar(13)   |
+| role               | varchar(255)  |
 
 ---
 
-## 👤 UserService
+### 📄 business_outlet
 
-### `User`
-
-- `user_id` (PK): UUID
-- `email`: VARCHAR, unique, not null
-- `phone`: VARCHAR, unique
-- `full_name`: VARCHAR
-- `password_hash`: TEXT
-- `created_at`: TIMESTAMP
-- `updated_at`: TIMESTAMP
-
-### `UserRole`
-
-- `id` (PK): UUID
-- `user_id`: UUID _(references `User.user_id` internally)_
-- `role`: ENUM [CUSTOMER, BUSINESS_ADMIN, DELIVERY_PARTNER]
-
-### `CustomerProfile`
-
-- `user_id` (PK): UUID _(references `User.user_id`)_
-- `preferred_language`: VARCHAR
-- `loyalty_points`: INTEGER
-- `primary_address_id`: UUID _(references `CustomerAddress.id`)_
-
-### `CustomerAddress`
-
-- `id` (PK): UUID
-- `user_id`: UUID
-- `address_name`: VARCHAR
-- `type`: VARCHAR
-- `timings`: VARCHAR
-- `address_line_1`: TEXT
-- `address_line_2`: TEXT
-- `geo_latitude`: DECIMAL
-- `geo_longitude`: DECIMAL
-
-### `DeliveryPartnerProfile`
-
-- `user_id` (PK): UUID
-- `vehicle_type`: VARCHAR
-- `license_number`: VARCHAR
-- `availability_status`: ENUM [AVAILABLE, UNAVAILABLE]
-- `joined_date`: TIMESTAMP
+| Column             | Type          |
+|--------------------|---------------|
+| id                 | uuid          |
+| is_active          | boolean       |
+| latitude           | numeric       |
+| longitude          | numeric       |
+| postal_code        | integer       |
+| business_id        | uuid          |
+| address_line_1     | varchar(255)  |
+| address_line_2     | varchar(255)  |
+| address_line_3     | varchar(255)  |
+| city               | varchar(255)  |
+| state              | varchar(255)  |
+| name               | varchar(255)  |
 
 ---
 
-## 🏢 BusinessService
+### 📄 order_queue
 
-### `Business`
-
-- `business_id` (PK): UUID
-- `name`: VARCHAR
-- `type_id`: UUID _(references `BusinessType.id`)_
-- `location_name`: TEXT
-- `status`: ENUM [ACTIVE, SUSPENDED]
-- `created_by`: UUID _(refers to `User.user_id`)_
-- `created_at`: TIMESTAMP
-- `updated_at`: TIMESTAMP
-
-### `BusinessType`
-
-- `id` (PK): UUID
-- `name`: VARCHAR
-- `industry`: VARCHAR
-- `updated_at`: TIMESTAMP
-
-### `BusinessAdminProfile`
-
-- `user_id` (PK): UUID
-- `business_id`: UUID
-- `admin_level`: ENUM [OWNER, MANAGER]
+| Column             | Type                     |
+|--------------------|--------------------------|
+| id                 | uuid                     |
+| created_at         | timestamp with time zone |
+| customer_id        | uuid                     |
+| order_amount       | numeric                  |
+| order_id           | uuid                     |
+| updated_at         | timestamp with time zone |
+| business_outlet_id | uuid                     |
+| status             | varchar(255)             |
 
 ---
 
-## 📦 InventoryService
+### 📄 order_queue_item
 
-### `ItemCatalog`
-
-- `item_catalog_id` (PK): UUID
-- `name`: VARCHAR
-- `description`: TEXT
-- `unit`: VARCHAR
-- `item_type`: VARCHAR
-- `is_active`: BOOLEAN
-- `subcategory`: VARCHAR
-
-### `BusinessItem`
-
-- `business_item_id` (PK): UUID
-- `business_id`: UUID
-- `item_catalog_id`: UUID
-- `base_price`: DECIMAL
-- `is_available`: BOOLEAN
-- `updated_at`: TIMESTAMP
-
-### `Inventory`
-
-- `inventory_id` (PK): UUID
-- `business_id`: UUID
-- `location_name`: VARCHAR
-- `capacity`: INTEGER
-- `type`: VARCHAR
-- `updated_at`: TIMESTAMP
-- `created_by`: UUID
-
-### `InventoryItem`
-
-- `inventory_item_id` (PK): UUID
-- `inventory_id`: UUID
-- `item_catalog_id`: UUID
-- `arrival_date`: DATE
-- `expiry_date`: DATE
-- `quantity`: INTEGER
-- `price`: DECIMAL
-- `updated_at`: TIMESTAMP
+| Column         | Type          |
+|----------------|---------------|
+| id             | uuid          |
+| base_price     | numeric       |
+| quantity       | integer       |
+| order_queue_id | uuid          |
+| name           | varchar(255)  |
 
 ---
 
-## 📬 OrderService
+### 📄 business
 
-### `Order`
-
-- `order_id` (PK): UUID
-- `customer_id`: UUID
-- `business_id`: UUID
-- `delivery_partner_id`: UUID
-- `status_id`: UUID _(references `OrderStatus.status_id`)_
-- `payment_mode_id`: UUID
-- `payment_status_id`: UUID
-- `delivery_address_id`: UUID
-- `total_amount`: DECIMAL
-- `coupon_applied_id`: UUID
-- `total_discount`: DECIMAL
-- `customer_instructions`: TEXT
-- `created_at`: TIMESTAMP
-- `updated_at`: TIMESTAMP
-
-### `OrderItem`
-
-- `order_item_id` (PK): UUID
-- `order_id`: UUID
-- `business_item_id`: UUID
-- `quantity`: INTEGER
-- `item_price_at_order`: DECIMAL
-- `discounted_item_price_at_order`: DECIMAL
-
-### `OrderEventHistory`
-
-- `id` (PK): UUID
-- `order_id`: UUID
-- `timestamp`: TIMESTAMP
-- `updated_by`: UUID
-- `status_id`: UUID
-- `comments`: TEXT
-
-### `OrderStatus`
-
-- `status_id` (PK): UUID
-- `status_name`: VARCHAR
+| Column | Type         |
+|--------|--------------|
+| id     | uuid         |
+| name   | varchar(255) |
+| type   | varchar(30)  |
 
 ---
 
-## 💸 PaymentService
+## 👤 Customer DB
 
-### `OrderPaymentMode`
+### 📄 customer_profile
 
-- `payment_mode_id` (PK): UUID
-- `payment_mode_name`: VARCHAR
-
-### `OrderPaymentStatus`
-
-- `id` (PK): UUID
-- `status_name`: VARCHAR
-
-### `Coupon`
-
-- `id` (PK): UUID
-- `discount_percent`: DECIMAL
-- `max_discount_price`: DECIMAL
-- `min_order_amount`: DECIMAL
-- `active_from`: DATE
-- `valid_till`: DATE
-- `enabled_payment_mode_id`: UUID
-- `updated_at`: TIMESTAMP
+| Column             | Type          |
+|--------------------|---------------|
+| id                 | uuid          |
+| is_email_verified  | boolean       |
+| primary_address_id | uuid          |
+| email              | varchar(255)  |
+| name               | varchar(255)  |
+| phone              | varchar(10)   |
 
 ---
 
-## ⭐ RatingService
+### 📄 customer_address
 
-### `Rating`
+| Column          | Type          |
+|-----------------|---------------|
+| id              | uuid          |
+| latitude        | numeric       |
+| longitude       | numeric       |
+| customer_id     | uuid          |
+| address_line_1  | varchar(255)  |
+| address_line_2  | varchar(255)  |
+| address_name    | varchar(255)  |
+| timings         | varchar(255)  |
+| type            | varchar(255)  |
 
-- `id` (PK): UUID
-- `customer_id`: UUID
-- `order_id`: UUID
-- `rating`: INTEGER
-- `type`: ENUM [ITEM, DELIVERY_PARTNER]
-- `timestamp`: TIMESTAMP
+---
+
+## 📦 Inventory DB
+
+### 📄 inventory_item
+
+| Column           | Type                     |
+|------------------|--------------------------|
+| expiry_date      | date                     |
+| price            | numeric                  |
+| quantity         | integer                  |
+| updated_at       | timestamp with time zone |
+| business_item_id | uuid                     |
+| inventory_id     | uuid                     |
+| id               | uuid                     |
+| arrival_date     | date                     |
+
+---
+
+### 📄 inventory
+
+| Column             | Type                     |
+|--------------------|--------------------------|
+| updated_at         | timestamp with time zone |
+| id                 | uuid                     |
+| business_id        | uuid                     |
+| business_outlet_id | uuid                     |
+| inventory_type     | varchar(255)             |
+| location_name      | varchar(255)             |
+| name               | varchar(255)             |
+
+---
+
+### 📄 item_catalog
+
+| Column         | Type                     |
+|----------------|--------------------------|
+| item_catalog_id| uuid                     |
+| created_at     | timestamp with time zone |
+| is_active      | boolean                  |
+| updated_at     | timestamp with time zone |
+| category       | varchar(255)             |
+| description    | varchar(255)             |
+| item_type      | varchar(255)             |
+| name           | varchar(255)             |
+| unit           | varchar(255)             |
+
+---
+
+### 📄 business_item
+
+| Column                   | Type                     |
+|--------------------------|--------------------------|
+| business_item_id         | uuid                     |
+| base_price               | numeric                  |
+| business_id              | uuid                     |
+| is_available             | boolean                  |
+| updated_at               | timestamp with time zone |
+| item_catalog_id          | uuid                     |
+| image_url                | varchar(255)             |
+| name                     | varchar(255)             |
+
+---
+
+## 🧾 Order DB
+
+### 📄 orders
+
+| Column                           | Type                     |
+|----------------------------------|--------------------------|
+| coupon_id                        | uuid                     |
+| business_id                      | uuid                     |
+| business_outlet_latitude         | numeric                  |
+| business_outlet_longitude        | numeric                  |
+| created_at                       | timestamp with time zone |
+| customer_id                      | uuid                     |
+| delivery_location_latitude       | numeric                  |
+| delivery_location_longitude      | numeric                  |
+| delivery_partner_id              | uuid                     |
+| latitude                         | numeric                  |
+| longitude                        | numeric                  |
+| discounted_amount                | numeric                  |
+| is_paid                          | boolean                  |
+| payment_id                       | uuid                     |
+| total_amount                     | numeric                  |
+| updated_at                       | timestamp with time zone |
+| order_id                         | uuid                     |
+| business_outlet_id               | uuid                     |
+| business_name                    | varchar(255)             |
+| business_outlet_address          | varchar(255)             |
+| delivery_partner_name            | varchar(255)             |
+| business_outlet_name             | varchar(255)             |
+| business_outlet_phone            | varchar(255)             |
+| delivery_partner_phone           | varchar(255)             |
+| customer_email                   | varchar(255)             |
+| customer_name                    | varchar(255)             |
+| customer_phone                   | varchar(255)             |
+| customer_instructions            | text                     |
+| deliver_location_address_line1   | varchar(255)             |
+| deliver_location_address_line2   | varchar(255)             |
+| deliver_location_address_line3   | varchar(255)             |
+| deliver_location_city            | varchar(255)             |
+| deliver_location_name            | varchar(255)             |
+| deliver_location_state           | varchar(255)             |
+| deliver_location_type            | varchar(255)             |
+| order_status                     | varchar(255)             |
+| delivery_partner_email           | varchar(255)             |
+
+---
+
+### 📄 order_items
+
+| Column                             | Type          |
+|------------------------------------|---------------|
+| order_item_id                      | uuid          |
+| business_item_discounted_price_at_order | numeric   |
+| business_item_id                   | uuid          |
+| business_item_price_at_order       | numeric       |
+| order_item_order_id                | uuid          |
+| business_item_type                 | varchar(255)  |
+| business_item_description          | varchar(255)  |
+| business_item_name                 | varchar(255)  |
+
+---
+
+### 📄 order_event_history
+
+| Column             | Type                     |
+|--------------------|--------------------------|
+| status_id          | uuid                     |
+| order_event_history_id | uuid                 |
+| time_stamp         | timestamp with time zone |
+| updated_by_id      | uuid                     |
+| order_id           | uuid                     |
+| updated_by         | varchar(255)             |
+| comments           | text                     |

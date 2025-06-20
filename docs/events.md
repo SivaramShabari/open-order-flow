@@ -17,20 +17,22 @@ Each event payload will be wrapped in a standard envelope:
 
 ---
 
-## 🧾 order.events
+## 🧾 Order Topic
 
 Used to track the entire lifecycle of an order.
 
-- `order.placed`
+- `order.requested`
 - `order.payment.initiated`
 - `order.paid`
+- `order.items.approved`
+- `order.items.rejected`
 - `order.confirmed`
 - `order.rejected`
 - `order.prep.started`
 - `order.prep.completed`
 - `order.partner.assignment.started`
 - `order.partner.assigned`
-- `order.partner.reached_pickup`
+- `order.partner.reached.pickup`
 - `order.partner.waiting`
 - `order.picked.up`
 - `order.dispatched`
@@ -42,7 +44,7 @@ Used to track the entire lifecycle of an order.
 
 ---
 
-## 📦 inventory.events
+## 📦 Inventory Topic
 
 Handles changes in item stock, catalog data, and inventory movements.
 
@@ -63,7 +65,7 @@ Handles changes in item stock, catalog data, and inventory movements.
 
 ---
 
-## 🚚 delivery.events
+## 🚚 Delivery Topic
 
 Tracks assignment and behavior of delivery partners.
 
@@ -80,7 +82,7 @@ Tracks assignment and behavior of delivery partners.
 
 ---
 
-## 🔔 notification.events
+## 🔔 Notification Topic
 
 Used to trigger outbound communication mechanisms.
 

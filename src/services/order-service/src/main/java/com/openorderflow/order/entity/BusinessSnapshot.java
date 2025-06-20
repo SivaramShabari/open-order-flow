@@ -15,12 +15,12 @@ import java.util.UUID;
 @Builder
 @Embeddable
 public class BusinessSnapshot {
-    private UUID id;
-    private UUID outletId;
-    private String name;
-    private String outletName;
-    private String outletPhone;
-    private String outletAddress;
+    private UUID businessId;
+    private UUID businessOutletId;
+    private String businessName;
+    private String businessOutletName;
+    private String businessOutletPhone;
+    private String businessOutletAddress;
 
     @Embedded
     @AttributeOverrides({
